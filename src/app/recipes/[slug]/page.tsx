@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { auth } from "@/auth";
 import { BackToPreviousPageButton } from "@/app/recipes/[slug]/back-to-previous-page-button";
 import { RecipeCommentsSection } from "@/app/recipes/[slug]/recipe-comments-section";
+import { RecipeFavoriteButton } from "@/app/recipes/[slug]/recipe-favorite-button";
 import { RelatedRecipesSection } from "@/app/recipes/[slug]/related-recipes-section";
 import { RecipeShareButtons } from "@/app/recipes/[slug]/recipe-share-buttons";
 import { RecipeImage } from "@/components/recipe-image";
-import { getRecipeBySlug, getRecipes, getRelatedRecipes } from "@/lib/recipe-repository";
+import { getRecipeBySlug, getRecipeFavoriteSnapshot, getRecipes, getRelatedRecipes } from "@/lib/recipe-repository";
 
 type RecipePageProps = {
   params: Promise<{
@@ -37,6 +39,7 @@ export async function generateMetadata({ params }: RecipePageProps): Promise<Met
 }
 
 export default async function RecipeDetailPage({ params }: RecipePageProps) {
+  const session = await auth();
   const { slug } = await params;
   const recipe = await getRecipeBySlug(slug);
 
@@ -45,6 +48,7 @@ export default async function RecipeDetailPage({ params }: RecipePageProps) {
   }
 
   const relatedRecipes = await getRelatedRecipes(recipe.slug, recipe.categorySlug);
+  const favoriteSnapshot = await getRecipeFavoriteSnapshot(recipe.slug, session?.user?.id);
   const totalMinutes = recipe.prepMinutes + recipe.cookMinutes;
   const headerStore = await headers();
   const forwardedHost = headerStore.get("x-forwarded-host");
@@ -122,7 +126,18 @@ export default async function RecipeDetailPage({ params }: RecipePageProps) {
                 </span>
               ))}
             </div>
-            <RecipeShareButtons title={recipe.title} url={recipeUrl} imageUrl={recipeImageUrl} />
+            <div className="grid gap-4 xl:gap-5">
+              <div className="xl:max-w-xl">
+                <RecipeFavoriteButton
+                  recipeSlug={recipe.slug}
+                  isAuthenticated={Boolean(session?.user)}
+                  featureEnabled={Boolean(process.env.DATABASE_URL)}
+                  initialIsFavorite={favoriteSnapshot.isFavorite}
+                  initialFavoriteCount={favoriteSnapshot.favoriteCount}
+                />
+              </div>
+              <RecipeShareButtons title={recipe.title} url={recipeUrl} imageUrl={recipeImageUrl} />
+            </div>
           </div>
 
           <aside className="grid gap-4 self-start rounded-[2rem] bg-[linear-gradient(180deg,#7c2d12_0%,#9a3412_100%)] p-6 text-amber-50 shadow-[0_20px_60px_rgba(124,45,18,0.22)] lg:sticky lg:top-24 xl:p-7">

@@ -10,6 +10,7 @@ Cooking blog application built with Next.js, TypeScript, Tailwind CSS, PostgreSQ
 - Prisma schema for Auth.js, recipes, categories, ingredients, steps, tags, comments, and favorites
 - Auth.js with email/password sign-in, optional Google sign-in, and protected dashboard access
 - Dashboard recipe management with server-side validation
+- Favorites/bookmarks for signed-in readers with a dashboard view of saved recipes
 - Repository layer that reads from Prisma when a database is configured and falls back to bundled sample recipes otherwise
 
 ## Setup
@@ -25,7 +26,7 @@ Cooking blog application built with Next.js, TypeScript, Tailwind CSS, PostgreSQ
 
 - If `DATABASE_URL` is empty, public recipe pages fall back to sample Bulgarian recipes.
 - Email/password registration requires a real database connection to create users.
-- Google sign-in stays disabled until both Google environment variables are provided.
+- Google sign-in stays disabled until `DATABASE_URL`, `AUTH_GOOGLE_ID`, and `AUTH_GOOGLE_SECRET` are all configured.
 
 ## Useful Commands
 
@@ -48,12 +49,14 @@ npm run db:studio
 - `/register` email/password registration page
 - `/dashboard` protected dashboard home
 - `/dashboard/recipes` dashboard recipe management
+- `/dashboard/favorites` saved recipes for the signed-in user
 - `/api/auth/[...nextauth]` Auth.js route handler
 
 ## Authentication
 
 - Email and password authentication is implemented with Auth.js credentials provider and `bcryptjs` password hashing.
-- Google authentication is optional and only appears when the Google environment variables are configured.
+- Google authentication is optional and only appears when the Google environment variables and a real database connection are configured.
+- Sign-in preserves `callbackUrl`, so comment and rating prompts can return the user to the recipe they came from.
 - Route protection is handled through middleware and auth checks in the application.
 
 ## Data Model

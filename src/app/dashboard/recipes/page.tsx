@@ -38,7 +38,7 @@ export default async function DashboardRecipesPage() {
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">Управление на рецепти</p>
               <h1 className="mt-2 font-serif text-4xl leading-tight lg:text-5xl">Създавай, публикувай и подреждай архива на блога</h1>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-stone-600">
-                Оттук можеш да добавяш нови рецепти, да качваш изображения и да следиш какво вече е публикувано в сайта.
+                Оттук можеш да добавяш нови рецепти, да качваш изображения и да следиш кое е публикувано и кое остава като чернова.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
@@ -85,23 +85,32 @@ export default async function DashboardRecipesPage() {
           </div>
         ) : null}
 
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1.12fr)_340px] lg:items-start lg:gap-8 xl:grid-cols-[minmax(0,1.08fr)_380px]">
-          <DashboardRecipeForm />
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,1.02fr)_minmax(320px,0.98fr)] lg:items-start lg:gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(360px,0.96fr)] xl:gap-8">
+          <div className="self-start">
+            <DashboardRecipeForm />
+          </div>
 
-          <aside className="flex flex-col rounded-[2rem] border border-black/8 bg-white/90 p-8 shadow-[0_20px_80px_rgba(56,44,24,0.08)] lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-hidden">
-            <div className="flex flex-wrap items-start justify-between gap-4 border-b border-black/6 pb-5">
-              <div className="max-w-[15rem]">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">Текущ архив</p>
-                <h2 className="mt-2 font-serif text-3xl text-stone-950">Публикувани рецепти</h2>
-                <p className="mt-2 text-sm leading-6 text-stone-700">Бърз преглед на наличните рецепти с директни действия за редакция и отваряне.</p>
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-black/8 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-stone-700 shadow-[0_8px_18px_rgba(56,44,24,0.04)]">
-                  {recipes.length} общо
-                </span>
-                <span className="rounded-full bg-emerald-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-800">
-                  {publishedRecipes} публикувани
-                </span>
+          <aside className="flex flex-col rounded-[2rem] border border-black/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(250,250,249,0.96))] p-7 shadow-[0_20px_80px_rgba(56,44,24,0.08)] lg:sticky lg:top-24 lg:max-h-[calc(100vh-8rem)] lg:overflow-hidden xl:p-8">
+            <div className="border-b border-black/6 pb-6">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">Текущ архив</p>
+              <h2 className="mt-2 font-serif text-3xl text-stone-950">Всички рецепти</h2>
+              <p className="mt-3 max-w-[18rem] text-sm leading-6 text-stone-700">
+                Бърз преглед на архива с по-ясно разделение между публикувани рецепти, чернови и примерни записи.
+              </p>
+
+              <div className="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+                <div className="rounded-[1.4rem] border border-black/8 bg-white px-4 py-4 shadow-[0_8px_20px_rgba(56,44,24,0.04)]">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-600">Общо</p>
+                  <p className="mt-2 font-serif text-3xl text-stone-950">{recipes.length}</p>
+                </div>
+                <div className="rounded-[1.4rem] border border-emerald-200/80 bg-emerald-50/90 px-4 py-4 shadow-[0_8px_20px_rgba(16,185,129,0.06)]">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-700">Публикувани</p>
+                  <p className="mt-2 font-serif text-3xl text-emerald-950">{publishedRecipes}</p>
+                </div>
+                <div className="rounded-[1.4rem] border border-stone-200/90 bg-stone-100/90 px-4 py-4 shadow-[0_8px_20px_rgba(56,44,24,0.04)]">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-600">Чернови</p>
+                  <p className="mt-2 font-serif text-3xl text-stone-950">{recipes.length - publishedRecipes}</p>
+                </div>
               </div>
             </div>
 
@@ -110,17 +119,22 @@ export default async function DashboardRecipesPage() {
                 const canManageRecipe = recipe.source === "database" && recipe.id && (session.user.role === "ADMIN" || recipe.authorId === session.user.id);
 
                 return (
-                  <div key={recipe.slug} className="rounded-[1.5rem] border border-black/8 bg-stone-50 px-4 py-4 shadow-[0_10px_28px_rgba(56,44,24,0.04)] transition duration-200 ease-out hover:border-black/10 hover:bg-white hover:shadow-[0_12px_30px_rgba(56,44,24,0.06)]">
-                    <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-600">
-                      <span className="rounded-full border border-black/8 bg-white px-2.5 py-1 text-stone-700">{recipe.category}</span>
-                      <span className="rounded-full border border-black/8 bg-white px-2.5 py-1 text-stone-700">{recipe.source === "database" ? "база данни" : "примерни"}</span>
+                  <div key={recipe.slug} className="rounded-[1.5rem] border border-black/8 bg-white/95 px-4 py-4 shadow-[0_10px_28px_rgba(56,44,24,0.04)] transition duration-200 ease-out hover:border-black/10 hover:shadow-[0_14px_34px_rgba(56,44,24,0.07)]">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-600">
+                          <span className="rounded-full border border-black/8 bg-stone-50 px-2.5 py-1 text-stone-700">{recipe.category}</span>
+                          <span className="rounded-full border border-black/8 bg-stone-50 px-2.5 py-1 text-stone-700">{recipe.source === "database" ? "база данни" : "примерни"}</span>
+                        </div>
+                        <h3 className="mt-3 font-serif text-2xl leading-tight text-stone-950">{recipe.title}</h3>
+                      </div>
                       <span className={`rounded-full px-2.5 py-1 ${recipe.published ? "bg-emerald-100 text-emerald-800" : "bg-stone-200 text-stone-700"}`}>
                         {recipe.published ? "публикувана" : "чернова"}
                       </span>
                     </div>
-                    <h3 className="mt-3 font-serif text-2xl text-stone-950">{recipe.title}</h3>
-                    <div className="mt-4 flex flex-col gap-3">
-                      <p className="w-fit rounded-full bg-amber-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-amber-900">Обновена {recipe.updatedAt}</p>
+
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-black/6 pt-4">
+                      <p className="rounded-full bg-amber-100/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-amber-900">Обновена {recipe.updatedAt}</p>
                       <div className="flex flex-wrap items-center gap-2">
                         {canManageRecipe ? (
                           <>
@@ -137,12 +151,18 @@ export default async function DashboardRecipesPage() {
                             {recipe.source === "database" ? "Без права за промяна" : "Само преглед"}
                           </span>
                         )}
-                        <Link
-                          href={`/recipes/${recipe.slug}`}
-                          className="inline-flex rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(217,119,6,0.18)] transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
-                        >
-                          Виж
-                        </Link>
+                        {recipe.published ? (
+                          <Link
+                            href={`/recipes/${recipe.slug}`}
+                            className="inline-flex rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(217,119,6,0.18)] transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
+                          >
+                            Виж
+                          </Link>
+                        ) : (
+                          <span className="inline-flex rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-600">
+                            Скрито от сайта
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>

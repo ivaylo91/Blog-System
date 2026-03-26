@@ -19,6 +19,7 @@ const footerLinks = [
 const dashboardFooterLinks = [
   { href: "/dashboard", label: "Табло" },
   { href: "/dashboard/recipes", label: "Рецепти" },
+  { href: "/dashboard/favorites", label: "Любими" },
   { href: "/recipes", label: "Публичен архив" },
   { href: "/", label: "Към сайта" },
 ];
@@ -218,7 +219,7 @@ export function SiteFooter({ currentYear }: Pick<SiteChromeShellProps, "currentY
                       ? "border-stone-300/70 bg-stone-200/80 text-stone-950 shadow-[0_10px_24px_rgba(41,37,36,0.1)]"
                       : item.href === "/dashboard"
                       ? "border-amber-200/70 bg-amber-50/85 text-amber-800 hover:border-amber-300 hover:bg-amber-100/90 hover:text-amber-950"
-                      : item.href === "/dashboard/recipes"
+                      : item.href === "/dashboard/recipes" || item.href === "/dashboard/favorites"
                         ? "border-amber-200/70 bg-amber-50/85 text-amber-800 hover:border-amber-300 hover:bg-amber-100/90 hover:text-amber-950"
                         : item.href === "/recipes"
                           ? "border-emerald-200/70 bg-emerald-50/85 text-emerald-800 hover:border-emerald-300 hover:bg-emerald-100/90 hover:text-emerald-950"

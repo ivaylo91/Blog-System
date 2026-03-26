@@ -81,6 +81,7 @@ export default async function DashboardEditRecipePage({ params }: PageProps) {
     tags: recipe.tags.map((recipeTag) => recipeTag.tag.name).join("\n"),
     ingredients: recipe.ingredients.map((ingredient) => `${ingredient.amount ?? "На вкус"} - ${ingredient.name}`).join("\n"),
     steps: recipe.steps.map((step) => step.instructions).join("\n"),
+    published: recipe.published,
     imagePath: recipe.heroImage,
   };
 
@@ -107,12 +108,18 @@ export default async function DashboardEditRecipePage({ params }: PageProps) {
                 >
                   Назад към управлението
                 </Link>
-                <Link
-                  href={`/recipes/${recipe.slug}`}
-                  className="rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-5 py-3 text-sm font-semibold text-amber-50 transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
-                >
-                  Виж публичната страница
-                </Link>
+                {recipe.published ? (
+                  <Link
+                    href={`/recipes/${recipe.slug}`}
+                    className="rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-5 py-3 text-sm font-semibold text-amber-50 transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
+                  >
+                    Виж публичната страница
+                  </Link>
+                ) : (
+                  <span className="rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-600">
+                    Черновата не е публична
+                  </span>
+                )}
               </div>
             </div>
 
@@ -124,6 +131,10 @@ export default async function DashboardEditRecipePage({ params }: PageProps) {
               <div className="rounded-[1.75rem] border border-black/8 bg-white/90 px-5 py-5 shadow-[0_10px_24px_rgba(56,44,24,0.05)] backdrop-blur">
                 <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Уеб адрес</p>
                 <p className="mt-2 break-all text-sm text-stone-950">/{recipe.slug}</p>
+              </div>
+              <div className="rounded-[1.75rem] border border-black/8 bg-white/90 px-5 py-5 shadow-[0_10px_24px_rgba(56,44,24,0.05)] backdrop-blur">
+                <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Статус</p>
+                <p className="mt-2 font-serif text-3xl text-stone-950">{recipe.published ? "Публикувана" : "Чернова"}</p>
               </div>
               <div className="rounded-[1.75rem] border border-black/8 bg-white/90 px-5 py-5 shadow-[0_10px_24px_rgba(56,44,24,0.05)] backdrop-blur">
                 <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Последна промяна</p>

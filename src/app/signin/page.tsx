@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 import { auth, signIn } from "@/auth";
+import { buildAuthRedirectPath, resolveSafeCallbackUrl } from "@/lib/auth-redirect";
 import { z } from "zod";
 
 export const metadata = {
@@ -16,6 +17,7 @@ const signInSchema = z.object({
 
 type SignInPageProps = {
   searchParams?: Promise<{
+    callbackUrl?: string;
     error?: string;
     registered?: string;
   }>;
@@ -24,13 +26,17 @@ type SignInPageProps = {
 export default async function SignInPage({ searchParams }: SignInPageProps) {
   const session = await auth();
   const resolvedSearchParams = (await searchParams) ?? {};
+  const callbackUrl = resolveSafeCallbackUrl(resolvedSearchParams.callbackUrl);
+  const googleAuthEnabled = Boolean(process.env.DATABASE_URL && process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
 
   if (session?.user) {
-    redirect("/dashboard");
+    redirect(callbackUrl);
   }
 
   async function signInWithCredentials(formData: FormData) {
     "use server";
+
+    const redirectTo = resolveSafeCallbackUrl(formData.get("callbackUrl")?.toString());
 
     const parsed = signInSchema.safeParse({
       email: formData.get("email"),
@@ -38,22 +44,32 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
     });
 
     if (!parsed.success) {
-      redirect("/signin?error=credentials");
+      redirect(buildAuthRedirectPath("/signin", { error: "credentials", callbackUrl: redirectTo }));
     }
 
     try {
       await signIn("credentials", {
         email: parsed.data.email,
         password: parsed.data.password,
-        redirectTo: "/dashboard",
+        redirectTo,
       });
     } catch (error) {
       if (error instanceof AuthError) {
-        redirect("/signin?error=credentials");
+        redirect(buildAuthRedirectPath("/signin", { error: "credentials", callbackUrl: redirectTo }));
       }
 
       throw error;
     }
+  }
+
+  async function signInWithGoogle(formData: FormData) {
+    "use server";
+
+    const redirectTo = resolveSafeCallbackUrl(formData.get("callbackUrl")?.toString());
+
+    await signIn("google", {
+      redirectTo,
+    });
   }
 
   return (
@@ -82,7 +98,26 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
             </p>
           ) : null}
 
+          {resolvedSearchParams.callbackUrl?.startsWith("/recipes/") ? (
+            <p className="rounded-2xl bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+              След вход ще се върнеш обратно към рецептата.
+            </p>
+          ) : null}
+
+          {googleAuthEnabled ? (
+            <form action={signInWithGoogle}>
+              <input type="hidden" name="callbackUrl" value={callbackUrl} />
+              <button
+                type="submit"
+                className="flex w-full items-center justify-center rounded-full border border-black/10 bg-white px-5 py-3 text-sm font-semibold text-stone-800 transition hover:border-black/15 hover:bg-stone-50"
+              >
+                Продължи с Google
+              </button>
+            </form>
+          ) : null}
+
           <form action={signInWithCredentials} className="space-y-3">
+            <input type="hidden" name="callbackUrl" value={callbackUrl} />
             <label className="grid gap-2 text-sm font-medium text-stone-700">
               Имейл
               <input
@@ -113,11 +148,17 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
           </form>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center gap-4 text-sm font-medium text-stone-600">
-          <Link href="/" className="transition hover:text-stone-950">
+        <div className="mt-8 flex items-center gap-3 text-sm font-medium max-[420px]:flex-col max-[420px]:items-stretch">
+          <Link
+            href="/"
+            className="whitespace-nowrap rounded-full border border-emerald-200/80 bg-emerald-50 px-5 py-2.5 text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-100 hover:text-emerald-950"
+          >
             Към началото
           </Link>
-          <Link href="/register" className="transition hover:text-stone-950">
+          <Link
+            href={buildAuthRedirectPath("/register", { callbackUrl })}
+            className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-sky-900/10 bg-[linear-gradient(135deg,#0ea5e9,#0369a1)] px-5 py-2.5 font-semibold text-white shadow-[0_12px_28px_rgba(2,132,199,0.28)] transition hover:bg-[linear-gradient(135deg,#0284c7,#075985)]"
+          >
             Нямаш профил? Създай нов
           </Link>
         </div>

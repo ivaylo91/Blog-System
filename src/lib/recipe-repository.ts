@@ -1,4 +1,5 @@
 import { unstable_noStore as noStore } from "next/cache";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getAllRecipes as getSampleRecipes, getRecipeBySlug as getSampleRecipeBySlug } from "@/data/recipes";
 
@@ -63,6 +64,16 @@ export type DashboardRecipeSummary = {
   source: "database" | "sample";
 };
 
+export type FavoriteRecipeSummary = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  imagePath: string;
+  category: string;
+  categorySlug: string;
+  savedAt: string;
+};
+
 const categoryPalettes: Record<string, AppRecipe["heroPalette"]> = {
   dinner: { from: "#7c2d12", via: "#c2410c", to: "#fde68a" },
   seafood: { from: "#164e63", via: "#0f766e", to: "#a7f3d0" },
@@ -110,27 +121,28 @@ function mapSampleRecipes(): AppRecipe[] {
   return getSampleRecipes();
 }
 
-async function mapDatabaseRecipes(): Promise<AppRecipe[]> {
-  const databaseRecipes = await prisma.recipe.findMany({
-    orderBy: [{ createdAt: "desc" }],
+const recipeInclude = {
+  author: true,
+  category: true,
+  ingredients: {
+    orderBy: { position: "asc" },
+  },
+  steps: {
+    orderBy: { position: "asc" },
+  },
+  tags: {
     include: {
-      author: true,
-      category: true,
-      ingredients: {
-        orderBy: { position: "asc" },
-      },
-      steps: {
-        orderBy: { position: "asc" },
-      },
-      tags: {
-        include: {
-          tag: true,
-        },
-      },
+      tag: true,
     },
-  });
+  },
+} satisfies Prisma.RecipeInclude;
 
-  return databaseRecipes.map((recipe) => ({
+type DatabaseRecipeRecord = Prisma.RecipeGetPayload<{
+  include: typeof recipeInclude;
+}>;
+
+function mapDatabaseRecipe(recipe: DatabaseRecipeRecord): AppRecipe {
+  return {
     slug: recipe.slug,
     title: recipe.title,
     imagePath: resolveImagePath(recipe.slug, recipe.category?.slug ?? "uncategorized", recipe.heroImage),
@@ -154,7 +166,19 @@ async function mapDatabaseRecipes(): Promise<AppRecipe[]> {
       title: `Стъпка ${index + 1}`,
       description: step.instructions,
     })),
-  }));
+  };
+}
+
+async function mapDatabaseRecipes(): Promise<AppRecipe[]> {
+  const databaseRecipes = await prisma.recipe.findMany({
+    where: {
+      published: true,
+    },
+    orderBy: [{ createdAt: "desc" }],
+    include: recipeInclude,
+  });
+
+  return databaseRecipes.map(mapDatabaseRecipe);
 }
 
 export async function getRecipes() {
@@ -177,8 +201,23 @@ export async function getFeaturedRecipes() {
 }
 
 export async function getRecipeBySlug(slug: string) {
-  const recipes = await getRecipes();
-  return recipes.find((recipe) => recipe.slug === slug) ?? getSampleRecipeBySlug(slug);
+  if (!hasDatabaseConfig()) {
+    return getSampleRecipeBySlug(slug);
+  }
+
+  try {
+    const recipe = await prisma.recipe.findFirst({
+      where: {
+        slug,
+        published: true,
+      },
+      include: recipeInclude,
+    });
+
+    return recipe ? mapDatabaseRecipe(recipe) : undefined;
+  } catch {
+    return getSampleRecipeBySlug(slug);
+  }
 }
 
 export async function getRelatedRecipes(slug: string, categorySlug: string) {
@@ -187,6 +226,121 @@ export async function getRelatedRecipes(slug: string, categorySlug: string) {
     .filter((recipe) => recipe.slug !== slug)
     .filter((recipe) => recipe.categorySlug === categorySlug)
     .sort((left, right) => right.publishedAt.localeCompare(left.publishedAt));
+}
+
+export async function getRecipeFavoriteSnapshot(recipeSlug: string, userId?: string | null) {
+  noStore();
+
+  if (!hasDatabaseConfig()) {
+    return {
+      isFavorite: false,
+      favoriteCount: 0,
+    };
+  }
+
+  try {
+    const recipe = await prisma.recipe.findFirst({
+      where: {
+        slug: recipeSlug,
+        published: true,
+      },
+      select: {
+        id: true,
+        _count: {
+          select: {
+            favorites: true,
+          },
+        },
+      },
+    });
+
+    if (!recipe) {
+      return {
+        isFavorite: false,
+        favoriteCount: 0,
+      };
+    }
+
+    if (!userId) {
+      return {
+        isFavorite: false,
+        favoriteCount: recipe._count.favorites,
+      };
+    }
+
+    const favorite = await prisma.favorite.findUnique({
+      where: {
+        userId_recipeId: {
+          userId,
+          recipeId: recipe.id,
+        },
+      },
+      select: {
+        recipeId: true,
+      },
+    });
+
+    return {
+      isFavorite: Boolean(favorite),
+      favoriteCount: recipe._count.favorites,
+    };
+  } catch {
+    return {
+      isFavorite: false,
+      favoriteCount: 0,
+    };
+  }
+}
+
+export async function getFavoriteRecipes(userId: string): Promise<FavoriteRecipeSummary[]> {
+  noStore();
+
+  if (!hasDatabaseConfig()) {
+    return [];
+  }
+
+  try {
+    const favorites = await prisma.favorite.findMany({
+      where: {
+        userId,
+        recipe: {
+          published: true,
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        createdAt: true,
+        recipe: {
+          select: {
+            slug: true,
+            title: true,
+            excerpt: true,
+            heroImage: true,
+            category: {
+              select: {
+                name: true,
+                slug: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return favorites.map((favorite) => ({
+      slug: favorite.recipe.slug,
+      title: favorite.recipe.title,
+      excerpt: favorite.recipe.excerpt ?? "Запазена рецепта от Кулинарният блог на Иво.",
+      imagePath: resolveImagePath(favorite.recipe.slug, favorite.recipe.category?.slug ?? "uncategorized", favorite.recipe.heroImage),
+      category: favorite.recipe.category?.name ?? "Без категория",
+      categorySlug: favorite.recipe.category?.slug ?? "uncategorized",
+      savedAt: favorite.createdAt.toISOString().slice(0, 10),
+    }));
+  } catch {
+    return [];
+  }
 }
 
 export async function getDashboardRecipes(): Promise<DashboardRecipeSummary[]> {

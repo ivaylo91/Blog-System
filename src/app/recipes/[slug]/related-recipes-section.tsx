@@ -10,7 +10,7 @@ type RelatedRecipesSectionProps = {
   category: string;
 };
 
-const INITIAL_VISIBLE_COUNT = 2;
+const INITIAL_VISIBLE_COUNT = 3;
 
 export function RelatedRecipesSection({ relatedRecipes, category }: RelatedRecipesSectionProps) {
   const [isExpanded, setIsExpanded] = useState(false);

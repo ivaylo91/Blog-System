@@ -27,6 +27,7 @@ const recipeFormSchema = z.object({
   prepMinutes: z.coerce.number().int().min(0),
   cookMinutes: z.coerce.number().int().min(0),
   servings: z.coerce.number().int().min(1),
+  published: z.boolean(),
   tags: z.string().optional(),
   ingredients: z.string().min(3, "Добави поне един продукт."),
   steps: z.string().min(3, "Добави поне една стъпка."),
@@ -116,6 +117,7 @@ function extractRecipeFormData(formData: FormData) {
       prepMinutes: formData.get("prepMinutes"),
       cookMinutes: formData.get("cookMinutes"),
       servings: formData.get("servings"),
+      published: formData.get("published") === "on",
       tags: formData.get("tags"),
       ingredients: formData.get("ingredients"),
       steps: formData.get("steps"),
@@ -227,7 +229,7 @@ export async function createRecipeAction(
         cookMinutes: parsed.data.cookMinutes,
         servings: parsed.data.servings,
         difficulty: parsed.data.difficulty,
-        published: true,
+        published: parsed.data.published,
         author: {
           connect: {
             id: user.id,
@@ -276,7 +278,15 @@ export async function createRecipeAction(
 
   revalidateRecipePaths();
 
-  return createSuccessState(uploadedImagePath ? "Рецептата е създадена, изображението е качено и публикацията е публикувана." : "Рецептата е създадена и публикувана.");
+  return createSuccessState(
+    uploadedImagePath
+      ? parsed.data.published
+        ? "Рецептата е създадена, изображението е качено и публикацията е публикувана."
+        : "Рецептата е записана като чернова и изображението е качено успешно."
+      : parsed.data.published
+        ? "Рецептата е създадена и публикувана."
+        : "Рецептата е записана като чернова.",
+  );
 }
 
 export async function updateRecipeAction(
@@ -344,6 +354,7 @@ export async function updateRecipeAction(
         cookMinutes: parsed.data.cookMinutes,
         servings: parsed.data.servings,
         difficulty: parsed.data.difficulty,
+        published: parsed.data.published,
         category: {
           connectOrCreate: {
             where: { slug: categorySlug },
@@ -396,7 +407,7 @@ export async function updateRecipeAction(
   revalidatePath(`/recipes/${parsed.data.slug}`);
   revalidatePath(`/dashboard/recipes/${parsed.data.slug}`);
 
-  return createSuccessState("Рецептата е обновена успешно.");
+  return createSuccessState(parsed.data.published ? "Рецептата е обновена успешно." : "Рецептата е обновена и остава като чернова.");
 }
 
 export async function deleteRecipeAction(formData: FormData) {

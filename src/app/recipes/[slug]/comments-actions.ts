@@ -8,6 +8,7 @@ import { z } from "zod";
 export type RecipeCommentActionState = {
   status: "idle" | "success" | "error";
   message: string;
+  currentRating?: number | null;
 };
 
 const recipeCommentSchema = z.object({
@@ -25,17 +26,19 @@ const recipeRatingClearSchema = z.object({
   recipeSlug: z.string().min(1),
 });
 
-function createErrorState(message: string): RecipeCommentActionState {
+function createErrorState(message: string, currentRating?: number | null): RecipeCommentActionState {
   return {
     status: "error",
     message,
+    currentRating,
   };
 }
 
-function createSuccessState(message: string): RecipeCommentActionState {
+function createSuccessState(message: string, currentRating?: number | null): RecipeCommentActionState {
   return {
     status: "success",
     message,
+    currentRating,
   };
 }
 
@@ -132,7 +135,7 @@ export async function rateRecipeAction(
 
     revalidatePath(`/recipes/${parsed.data.recipeSlug}`);
 
-    return createSuccessState("Оценката ти беше премахната.");
+    return createSuccessState("Оценката ти беше премахната.", null);
   }
 
   const parsed = recipeRatingSchema.safeParse({
@@ -162,7 +165,7 @@ export async function rateRecipeAction(
 
     revalidatePath(`/recipes/${parsed.data.recipeSlug}`);
 
-    return createSuccessState("Оценката ти беше обновена.");
+    return createSuccessState("Оценката ти беше обновена.", parsed.data.rating);
   }
 
   await prisma.comment.create({
@@ -176,7 +179,7 @@ export async function rateRecipeAction(
 
   revalidatePath(`/recipes/${parsed.data.recipeSlug}`);
 
-  return createSuccessState("Оценката ти беше запазена.");
+  return createSuccessState("Оценката ти беше запазена.", parsed.data.rating);
 }
 
 export async function addRecipeCommentAction(

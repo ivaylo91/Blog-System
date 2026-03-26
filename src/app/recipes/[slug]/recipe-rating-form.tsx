@@ -7,6 +7,7 @@ import { rateRecipeAction, type RecipeCommentActionState } from "@/app/recipes/[
 const initialState: RecipeCommentActionState = {
   status: "idle",
   message: "",
+  currentRating: null,
 };
 
 type RecipeRatingFormProps = {
@@ -18,10 +19,26 @@ function renderStarLabel(value: number, selectedRating: number) {
   return value <= selectedRating ? "text-amber-500" : "text-stone-300";
 }
 
+function getRatingDescription(rating: number) {
+  const labels: Record<number, string> = {
+    1: "Слаба",
+    2: "По-скоро слаба",
+    3: "Добра",
+    4: "Много добра",
+    5: "Отлична",
+  };
+
+  return labels[rating] ?? "Избери оценка";
+}
+
 export function RecipeRatingForm({ recipeSlug, initialRating = 0 }: RecipeRatingFormProps) {
   const [rating, setRating] = useState(initialRating > 0 ? initialRating : 5);
   const [hoveredRating, setHoveredRating] = useState<number | null>(null);
-  const [state, formAction, pending] = useActionState(rateRecipeAction, initialState);
+  const [state, formAction, pending] = useActionState(rateRecipeAction, {
+    ...initialState,
+    currentRating: initialRating > 0 ? initialRating : null,
+  });
+  const savedRating = state.currentRating !== undefined ? state.currentRating : initialRating > 0 ? initialRating : null;
   const displayedRating = hoveredRating ?? rating;
 
   return (
@@ -31,13 +48,13 @@ export function RecipeRatingForm({ recipeSlug, initialRating = 0 }: RecipeRating
 
       <div>
         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-700">Оцени рецептата</p>
-        <h3 className="mt-2 font-serif text-3xl text-stone-950">{initialRating > 0 ? "Промени оценката си" : "Дай бърза оценка"}</h3>
+        <h3 className="mt-2 font-serif text-3xl text-stone-950">{savedRating ? "Промени оценката си" : "Дай бърза оценка"}</h3>
         <p className="mt-3 text-sm leading-6 text-stone-600">
           Избери от 1 до 5 звезди. Ако искаш, после можеш да добавиш и текстов коментар.
         </p>
-        {initialRating > 0 ? (
+        {savedRating ? (
           <p className="mt-3 rounded-[1.25rem] border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
-            Твоята текуща оценка е {initialRating} / 5.
+            Твоята текуща оценка е {savedRating} / 5.
           </p>
         ) : null}
       </div>
@@ -61,16 +78,24 @@ export function RecipeRatingForm({ recipeSlug, initialRating = 0 }: RecipeRating
         ))}
       </div>
 
+      <p className="text-sm font-medium text-stone-700">
+        Избрано: <span className="text-stone-950">{displayedRating} / 5</span> · {getRatingDescription(displayedRating)}
+      </p>
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p aria-live="polite" className={`text-sm ${state.status === "error" ? "text-red-700" : "text-emerald-700"}`}>
           {state.message || ""}
         </p>
         <div className="flex flex-wrap items-center gap-2">
-          {initialRating > 0 ? (
+          {savedRating ? (
             <button
               type="submit"
               name="intent"
               value="clear"
+              onClick={() => {
+                setRating(5);
+                setHoveredRating(null);
+              }}
               disabled={pending}
               className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-5 py-3 text-sm font-semibold text-red-700 transition duration-200 ease-out hover:-translate-y-0.5 hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:border-red-100 disabled:bg-red-50/70 disabled:text-red-400"
             >
@@ -86,7 +111,7 @@ export function RecipeRatingForm({ recipeSlug, initialRating = 0 }: RecipeRating
             className="inline-flex items-center gap-2 rounded-full bg-stone-950 px-6 py-3 text-sm font-semibold text-white transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-400"
           >
             <Sparkles aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
-            {pending ? "Запазване..." : initialRating > 0 ? "Обнови оценката" : "Запази оценката"}
+            {pending ? "Запазване..." : savedRating ? "Обнови оценката" : "Запази оценката"}
           </button>
         </div>
       </div>

@@ -23,6 +23,7 @@ export type DashboardRecipeFormValues = {
   tags: string;
   ingredients: string;
   steps: string;
+  published: boolean;
   imagePath?: string | null;
 };
 
@@ -97,6 +98,7 @@ const defaultValues: DashboardRecipeFormValues = {
   tags: "",
   ingredients: "",
   steps: "",
+  published: false,
   imagePath: null,
 };
 
@@ -246,6 +248,21 @@ export function DashboardRecipeForm({
             <textarea name="tags" rows={4} className={inputClassName} placeholder={"Бързо\nДомашно\nЗа делник"} defaultValue={initialValues.tags} />
           </label>
         </div>
+
+        <label className="flex items-start gap-4 rounded-[1.5rem] border border-black/6 bg-white/80 p-5 text-sm text-stone-700 shadow-[0_10px_24px_rgba(56,44,24,0.04)] xl:p-6">
+          <input
+            name="published"
+            type="checkbox"
+            defaultChecked={initialValues.published}
+            className="mt-1 h-5 w-5 rounded border border-black/20 text-emerald-700 focus:ring-emerald-200"
+          />
+          <span className="grid gap-1">
+            <span className="font-semibold text-stone-900">Публикувай рецептата</span>
+            <span className="text-xs leading-6 text-stone-600">
+              Когато отметката е изключена, рецептата остава като чернова и няма да се показва в публичния архив.
+            </span>
+          </span>
+        </label>
       </section>
 
       <section className={sectionClassName}>
@@ -295,7 +312,7 @@ export function DashboardRecipeForm({
               : "border border-green-900/20 bg-green-700 shadow-[0_12px_28px_rgba(21,128,61,0.22)] hover:bg-green-800"
           }`}
         >
-          {pending ? "Запазване..." : isEditMode ? "Запази промените" : "Създай рецепта"}
+          {pending ? "Запазване..." : isEditMode ? "Запази промените" : "Запази рецептата"}
         </button>
       </div>
     </form>

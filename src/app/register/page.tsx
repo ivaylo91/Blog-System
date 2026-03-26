@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { auth } from "@/auth";
+import { buildAuthRedirectPath, resolveSafeCallbackUrl } from "@/lib/auth-redirect";
 import { prisma } from "@/lib/prisma";
 
 const registerSchema = z
@@ -24,6 +25,7 @@ export const metadata = {
 
 type RegisterPageProps = {
   searchParams?: Promise<{
+    callbackUrl?: string;
     error?: string;
   }>;
 };
@@ -31,16 +33,19 @@ type RegisterPageProps = {
 export default async function RegisterPage({ searchParams }: RegisterPageProps) {
   const session = await auth();
   const resolvedSearchParams = (await searchParams) ?? {};
+  const callbackUrl = resolveSafeCallbackUrl(resolvedSearchParams.callbackUrl);
 
   if (session?.user) {
-    redirect("/dashboard");
+    redirect(callbackUrl);
   }
 
   async function registerWithEmail(formData: FormData) {
     "use server";
 
+    const redirectTo = resolveSafeCallbackUrl(formData.get("callbackUrl")?.toString());
+
     if (!process.env.DATABASE_URL) {
-      redirect("/register?error=database");
+      redirect(buildAuthRedirectPath("/register", { error: "database", callbackUrl: redirectTo }));
     }
 
     const parsed = registerSchema.safeParse({
@@ -51,7 +56,12 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     });
 
     if (!parsed.success) {
-      redirect(`/register?error=${encodeURIComponent(parsed.error.issues[0]?.message ?? "Невалидни данни.")}`);
+      redirect(
+        buildAuthRedirectPath("/register", {
+          error: parsed.error.issues[0]?.message ?? "Невалидни данни.",
+          callbackUrl: redirectTo,
+        }),
+      );
     }
 
     const existingUser = await prisma.user.findUnique({
@@ -60,7 +70,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     });
 
     if (existingUser) {
-      redirect("/register?error=Потребител с този имейл вече съществува.");
+      redirect(buildAuthRedirectPath("/register", { error: "Потребител с този имейл вече съществува.", callbackUrl: redirectTo }));
     }
 
     const passwordHash = await hash(parsed.data.password, 12);
@@ -73,7 +83,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
       },
     });
 
-    redirect("/signin?registered=1");
+    redirect(buildAuthRedirectPath("/signin", { registered: "1", callbackUrl: redirectTo }));
   }
 
   return (
@@ -97,7 +107,14 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
           </p>
         ) : null}
 
+        {resolvedSearchParams.callbackUrl?.startsWith("/recipes/") ? (
+          <p className="mt-6 rounded-2xl bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+            След регистрация ще можеш да влезеш и да се върнеш обратно към рецептата.
+          </p>
+        ) : null}
+
         <form action={registerWithEmail} className="mt-8 grid gap-4">
+          <input type="hidden" name="callbackUrl" value={callbackUrl} />
           <label className="grid gap-2 text-sm font-medium text-stone-700">
             Име
             <input
@@ -151,7 +168,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
-            href="/signin"
+            href={buildAuthRedirectPath("/signin", { callbackUrl })}
             className="rounded-full bg-[linear-gradient(135deg,#0369a1,#0284c7)] px-6 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-sky-50 shadow-[0_12px_28px_rgba(2,132,199,0.2)] transition hover:bg-[linear-gradient(135deg,#075985,#0369a1)]"
           >
             Имам профил

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth, signOut } from "@/auth";
-import { getDashboardRecipes } from "@/lib/recipe-repository";
+import { getDashboardRecipes, getFavoriteRecipes } from "@/lib/recipe-repository";
 
 export const metadata = {
   title: "Табло | Кулинарният блог на Иво",
@@ -27,6 +27,12 @@ const quickLinks = [
     href: "/",
     cta: "Към началото",
   },
+  {
+    title: "Любими рецепти",
+    description: "Прегледай рецептите, които си запазил от публичния архив.",
+    href: "/dashboard/favorites",
+    cta: "Отвори любими",
+  },
 ];
 
 const roleLabels = {
@@ -42,6 +48,7 @@ export default async function DashboardPage() {
   }
 
   const recipes = await getDashboardRecipes();
+  const favoriteRecipes = await getFavoriteRecipes(session.user.id);
 
   async function handleSignOut() {
     "use server";
@@ -53,6 +60,7 @@ export default async function DashboardPage() {
   const publishedRecipes = recipes.filter((recipe) => recipe.published).length;
   const databaseRecipes = recipes.filter((recipe) => recipe.source === "database").length;
   const sampleRecipes = recipes.filter((recipe) => recipe.source === "sample").length;
+  const favoriteRecipesCount = favoriteRecipes.length;
 
   return (
     <main className="relative overflow-hidden">
@@ -75,7 +83,7 @@ export default async function DashboardPage() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/dashboard/recipes"
-                  className="rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-6 py-3 text-sm font-semibold text-amber-50 transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
+                  className="rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-7 py-3.5 text-sm font-semibold text-amber-50 transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
                 >
                   Управление на рецепти
                 </Link>
@@ -88,7 +96,7 @@ export default async function DashboardPage() {
               </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1 xl:self-start">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:self-start">
               <div className="rounded-[1.75rem] border border-black/8 bg-white/90 px-5 py-5 shadow-[0_10px_24px_rgba(56,44,24,0.05)] backdrop-blur">
                 <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Общо рецепти</p>
                 <p className="mt-2 font-serif text-4xl text-stone-950">{recipes.length}</p>
@@ -100,6 +108,10 @@ export default async function DashboardPage() {
               <div className="rounded-[1.75rem] border border-black/8 bg-white/90 px-5 py-5 shadow-[0_10px_24px_rgba(56,44,24,0.05)] backdrop-blur">
                 <p className="text-xs uppercase tracking-[0.18em] text-stone-600">База данни</p>
                 <p className="mt-2 font-serif text-4xl text-stone-950">{databaseRecipes}</p>
+              </div>
+              <div className="rounded-[1.75rem] border border-black/8 bg-white/90 px-5 py-5 shadow-[0_10px_24px_rgba(56,44,24,0.05)] backdrop-blur">
+                <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Любими</p>
+                <p className="mt-2 font-serif text-4xl text-stone-950">{favoriteRecipesCount}</p>
               </div>
             </div>
           </div>
@@ -128,19 +140,51 @@ export default async function DashboardPage() {
               <h2 className="mt-2 font-serif text-3xl text-stone-900">Избери какво да управляваш</h2>
             </div>
 
-            <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {quickLinks.map((item) => (
+            <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+              {quickLinks.map((item, index) => (
                 <Link
                   key={item.title}
                   href={item.href}
-                  className="group rounded-[1.75rem] border border-black/8 bg-stone-50 px-5 py-5 shadow-[0_10px_28px_rgba(56,44,24,0.04)] transition duration-200 ease-out hover:-translate-y-1 hover:border-stone-300 hover:bg-white hover:shadow-[0_16px_36px_rgba(56,44,24,0.08)]"
+                  className={`group flex h-full flex-col rounded-[1.9rem] border px-6 py-6 transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(56,44,24,0.1)] ${
+                    index === 0
+                      ? "justify-between border-amber-200/80 bg-[linear-gradient(145deg,rgba(255,247,237,0.96),rgba(254,243,199,0.88))] shadow-[0_18px_40px_rgba(217,119,6,0.12)] lg:row-span-2 lg:min-h-[22rem]"
+                      : index === 1
+                        ? "border-emerald-200/80 bg-[linear-gradient(145deg,rgba(236,253,245,0.96),rgba(255,255,255,0.92))] shadow-[0_12px_30px_rgba(22,163,74,0.08)]"
+                        : index === 2
+                          ? "border-sky-200/80 bg-[linear-gradient(145deg,rgba(240,249,255,0.96),rgba(255,255,255,0.92))] shadow-[0_12px_30px_rgba(2,132,199,0.08)]"
+                          : "border-rose-200/80 bg-[linear-gradient(145deg,rgba(255,241,242,0.96),rgba(255,255,255,0.92))] shadow-[0_12px_30px_rgba(225,29,72,0.08)]"
+                  }`}
                 >
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">{item.cta}</p>
-                  <h3 className="mt-3 font-serif text-2xl text-stone-950">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-stone-600">{item.description}</p>
-                  <span className="mt-5 inline-flex text-sm font-semibold text-stone-700 transition group-hover:text-stone-950">
-                    Отвори секцията
-                  </span>
+                  <div>
+                    <p
+                      className={`text-xs font-semibold uppercase tracking-[0.18em] ${
+                        index === 0
+                          ? "text-amber-800"
+                          : index === 1
+                            ? "text-emerald-700"
+                            : index === 2
+                              ? "text-sky-700"
+                              : "text-rose-700"
+                      }`}
+                    >
+                      {item.cta}
+                    </p>
+                    <h3 className={`mt-3 font-serif ${index === 0 ? "text-4xl" : "text-2xl"} text-stone-950`}>{item.title}</h3>
+                    <p className={`mt-3 text-sm leading-7 ${index === 0 ? "max-w-md text-stone-700" : "text-stone-600"}`}>{item.description}</p>
+                  </div>
+
+                  <div className="mt-6 flex items-center justify-between gap-3">
+                    <span
+                      className={`inline-flex rounded-full px-4 py-2 text-sm font-semibold transition ${
+                        index === 0
+                          ? "bg-[linear-gradient(135deg,#d97706,#ea580c)] text-amber-50 shadow-[0_10px_24px_rgba(217,119,6,0.2)] group-hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
+                          : "border border-black/10 bg-white/90 text-stone-700 group-hover:border-black/15 group-hover:bg-white"
+                      }`}
+                    >
+                      Отвори секцията
+                    </span>
+                    <span className="text-sm font-semibold text-stone-500 transition group-hover:text-stone-800">→</span>
+                  </div>
                 </Link>
               ))}
             </div>

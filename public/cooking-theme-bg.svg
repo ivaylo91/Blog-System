@@ -1,0 +1,54 @@
+<svg width="1600" height="1200" viewBox="0 0 1600 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1200" fill="#fff8ef"/>
+  <rect width="1600" height="1200" fill="url(#wood)" opacity="0.2"/>
+
+  <g opacity="0.7">
+    <circle cx="1320" cy="210" r="180" fill="#fde68a"/>
+    <circle cx="1320" cy="210" r="120" fill="#f59e0b" fill-opacity="0.18"/>
+    <circle cx="260" cy="980" r="220" fill="#fdba74" fill-opacity="0.28"/>
+    <circle cx="1260" cy="920" r="200" fill="#86efac" fill-opacity="0.18"/>
+  </g>
+
+  <g opacity="0.8">
+    <ellipse cx="240" cy="210" rx="120" ry="74" fill="#ffffff"/>
+    <ellipse cx="240" cy="210" rx="88" ry="52" fill="#fef3c7"/>
+    <circle cx="198" cy="198" r="12" fill="#b91c1c"/>
+    <circle cx="230" cy="226" r="10" fill="#166534"/>
+    <circle cx="276" cy="190" r="11" fill="#ea580c"/>
+    <circle cx="286" cy="226" r="9" fill="#854d0e"/>
+  </g>
+
+  <g transform="translate(1080 710) rotate(-12)">
+    <rect x="0" y="0" width="260" height="150" rx="28" fill="#a16207" fill-opacity="0.16"/>
+    <rect x="22" y="22" width="216" height="106" rx="20" fill="#d97706" fill-opacity="0.14" stroke="#92400e" stroke-opacity="0.18"/>
+    <circle cx="64" cy="54" r="12" fill="#166534"/>
+    <circle cx="104" cy="82" r="10" fill="#166534" fill-opacity="0.9"/>
+    <circle cx="154" cy="62" r="14" fill="#dc2626" fill-opacity="0.85"/>
+    <circle cx="194" cy="88" r="11" fill="#f97316" fill-opacity="0.9"/>
+  </g>
+
+  <g transform="translate(112 660)">
+    <path d="M0 110C58 28 118 0 182 0C246 0 304 28 360 110" stroke="#166534" stroke-opacity="0.18" stroke-width="18" stroke-linecap="round"/>
+    <path d="M122 92C154 50 196 26 242 20" stroke="#166534" stroke-opacity="0.24" stroke-width="12" stroke-linecap="round"/>
+    <path d="M104 114C146 92 196 86 246 92" stroke="#65a30d" stroke-opacity="0.22" stroke-width="10" stroke-linecap="round"/>
+  </g>
+
+  <g transform="translate(720 112) rotate(14)" opacity="0.5">
+    <rect x="14" y="0" width="24" height="280" rx="12" fill="#7c2d12"/>
+    <ellipse cx="26" cy="296" rx="72" ry="56" fill="#9a3412"/>
+    <ellipse cx="26" cy="296" rx="46" ry="32" fill="#fdba74" fill-opacity="0.3"/>
+  </g>
+
+  <g opacity="0.45">
+    <path d="M1456 526C1390 490 1322 476 1250 484" stroke="#166534" stroke-width="14" stroke-linecap="round"/>
+    <path d="M1410 568C1368 536 1324 518 1274 512" stroke="#16a34a" stroke-width="10" stroke-linecap="round"/>
+    <path d="M1468 610C1398 588 1334 584 1272 594" stroke="#65a30d" stroke-width="10" stroke-linecap="round"/>
+  </g>
+
+  <defs>
+    <pattern id="wood" width="160" height="160" patternUnits="userSpaceOnUse">
+      <path d="M0 40C28 22 58 18 96 26C124 32 144 32 160 28" stroke="#92400e" stroke-opacity="0.08" stroke-width="8" fill="none"/>
+      <path d="M0 108C38 88 72 84 118 92C138 96 152 96 160 94" stroke="#92400e" stroke-opacity="0.08" stroke-width="8" fill="none"/>
+    </pattern>
+  </defs>
+</svg>

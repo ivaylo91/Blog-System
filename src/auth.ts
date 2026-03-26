@@ -1,0 +1,107 @@
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { Role } from "@prisma/client";
+import { compare } from "bcryptjs";
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const credentialsSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(5),
+});
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: "jwt",
+  },
+  pages: {
+    signIn: "/signin",
+  },
+  providers: [
+    Credentials({
+      name: "Email and password",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const parsed = credentialsSchema.safeParse(credentials);
+
+        if (!parsed.success) {
+          return null;
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { email: parsed.data.email },
+        });
+
+        if (!user?.passwordHash) {
+          return null;
+        }
+
+        const passwordMatches = await compare(parsed.data.password, user.passwordHash);
+
+        if (!passwordMatches || !user.email) {
+          return null;
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          role: user.role,
+        };
+      },
+    }),
+  ],
+  callbacks: {
+    authorized({ auth: session, request: { nextUrl } }) {
+      if (nextUrl.pathname.startsWith("/dashboard")) {
+        return Boolean(session?.user);
+      }
+
+      return true;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.sub = user.id;
+        token.role = (user as { role?: Role }).role;
+      }
+
+      if (token.sub && (!token.role || !token.email || !token.name || !token.picture)) {
+        const databaseUser = await prisma.user.findUnique({
+          where: { id: token.sub },
+          select: {
+            role: true,
+            email: true,
+            name: true,
+            image: true,
+          },
+        });
+
+        if (databaseUser) {
+          token.role = databaseUser.role;
+          token.email = databaseUser.email ?? token.email;
+          token.name = databaseUser.name ?? token.name;
+          token.picture = databaseUser.image ?? token.picture;
+        }
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.sub ?? session.user.id;
+        session.user.role = (token.role as Role | undefined) ?? "USER";
+        session.user.email = token.email ?? session.user.email;
+        session.user.name = token.name ?? session.user.name;
+        session.user.image = token.picture ?? session.user.image;
+      }
+
+      return session;
+    },
+  },
+});

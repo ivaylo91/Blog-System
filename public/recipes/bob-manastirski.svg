@@ -1,0 +1,23 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" fill="#EAD7B3"/>
+  <rect y="548" width="1200" height="252" fill="#C09A68"/>
+  <ellipse cx="600" cy="430" rx="360" ry="210" fill="#6E3F2A"/>
+  <ellipse cx="600" cy="415" rx="315" ry="180" fill="#875033"/>
+  <ellipse cx="600" cy="405" rx="286" ry="152" fill="#B75F2D"/>
+  <ellipse cx="475" cy="392" rx="52" ry="36" fill="#F1DDAC"/>
+  <ellipse cx="554" cy="338" rx="48" ry="34" fill="#E9D19B"/>
+  <ellipse cx="646" cy="432" rx="56" ry="38" fill="#F0D8A1"/>
+  <ellipse cx="730" cy="365" rx="50" ry="35" fill="#EFD7A5"/>
+  <ellipse cx="792" cy="444" rx="48" ry="34" fill="#E8C68D"/>
+  <ellipse cx="428" cy="470" rx="44" ry="30" fill="#D99B45"/>
+  <ellipse cx="515" cy="494" rx="42" ry="28" fill="#D98935"/>
+  <ellipse cx="620" cy="505" rx="46" ry="31" fill="#D79A43"/>
+  <ellipse cx="719" cy="501" rx="44" ry="30" fill="#D28B33"/>
+  <ellipse cx="804" cy="486" rx="40" ry="28" fill="#C87D2E"/>
+  <circle cx="351" cy="348" r="22" fill="#A95A2C"/>
+  <circle cx="845" cy="395" r="24" fill="#A4502A"/>
+  <circle cx="585" cy="292" r="20" fill="#7BA04F"/>
+  <circle cx="700" cy="528" r="19" fill="#7AA34C"/>
+  <circle cx="495" cy="546" r="17" fill="#6F9446"/>
+  <circle cx="918" cy="162" r="82" fill="#F0B458" fill-opacity="0.18"/>
+</svg>

@@ -125,7 +125,7 @@ export default function DashboardRecipeForm({
     }
     if (state.status !== "idle" && state.message) {
       const timeout = setTimeout(() => {
-        formAction(initialState, new FormData());
+        formAction(new FormData());
       }, 4000);
       return () => clearTimeout(timeout);
     }

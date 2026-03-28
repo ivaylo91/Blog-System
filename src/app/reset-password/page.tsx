@@ -19,16 +19,18 @@ export default async function ResetPasswordPage({ searchParams }: ResetProps) {
     "use server";
 
     const newPassword = String(formData.get("password") ?? "");
+    const emailValue = String(email);
+    const tokenValue = String(token);
     if (newPassword.length < 8) return;
 
-    const record = await prisma.verificationToken.findUnique({ where: { identifier_token: { identifier: `pw:${email}`, token } } });
+    const record = await prisma.verificationToken.findUnique({ where: { identifier_token: { identifier: `pw:${emailValue}`, token: tokenValue } } });
     if (!record || new Date(record.expires) < new Date()) {
       redirect(buildAuthRedirectPath("/signin", { callbackUrl: "/" }));
     }
 
     const passwordHash = await hash(newPassword, 12);
-    await prisma.user.update({ where: { email }, data: { passwordHash } });
-    await prisma.verificationToken.delete({ where: { identifier_token: { identifier: `pw:${email}`, token } } });
+    await prisma.user.update({ where: { email: emailValue }, data: { passwordHash } });
+    await prisma.verificationToken.delete({ where: { identifier_token: { identifier: `pw:${emailValue}`, token: tokenValue } } });
 
     redirect(buildAuthRedirectPath("/signin", { callbackUrl: "/" }));
   }

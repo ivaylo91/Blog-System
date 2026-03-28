@@ -8,14 +8,14 @@ import { deleteRecipeAction } from "@/app/dashboard/recipes/actions";
 import { DashboardRecipeDeleteButton } from "@/app/dashboard/recipes/delete-recipe-button";
 
 type ArchiveRecipe = {
-  id?: string;
+  id?: string | null;
   slug: string;
   title: string;
   category: string;
   source: "database" | "sample";
   published: boolean;
   updatedAt: string;
-  authorId?: string;
+  authorId?: string | null;
 };
 
 type DashboardRecipesArchiveProps = {

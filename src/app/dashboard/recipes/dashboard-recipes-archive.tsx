@@ -163,30 +163,33 @@ export function DashboardRecipesArchive({ recipes, currentUserId, currentUserRol
       )}
 
       {totalPages > 1 ? (
-        <div className="mt-6 flex flex-col gap-4 border-t border-black/6 pt-5 text-sm text-stone-700 lg:flex-row lg:items-center lg:justify-between">
-          <p>
-            Показани {rangeStart}-{rangeEnd} от {recipes.length} рецепти
-          </p>
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-              disabled={currentPage === 1}
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950 disabled:cursor-not-allowed disabled:border-stone-300 disabled:bg-stone-200 disabled:text-stone-500"
-            >
-              Назад
-            </button>
-            <span className="rounded-full border border-black/8 bg-stone-50 px-4 py-2 font-semibold text-stone-700">
-              Страница {currentPage} от {totalPages}
-            </span>
-            <button
-              type="button"
-              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-              disabled={currentPage === totalPages}
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950 disabled:cursor-not-allowed disabled:border-stone-300 disabled:bg-stone-200 disabled:text-stone-500"
-            >
-              Напред
-            </button>
+        <div className="mt-6 border-t border-black/6 pt-5 text-sm text-stone-700">
+          <div className="flex flex-col items-center gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <p className="text-center lg:text-left">
+              Показани {rangeStart}-{rangeEnd} от {recipes.length} рецепти
+            </p>
+
+            <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:w-auto">
+              <button
+                type="button"
+                onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                disabled={currentPage === 1}
+                className="inline-flex w-full items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950 disabled:cursor-not-allowed disabled:border-stone-300 disabled:bg-stone-200 disabled:text-stone-500 sm:w-auto"
+              >
+                Назад
+              </button>
+              <span className="w-full text-center rounded-full border border-black/8 bg-stone-50 px-4 py-2 font-semibold text-stone-700 sm:w-auto">
+                Страница {currentPage} от {totalPages}
+              </span>
+              <button
+                type="button"
+                onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                disabled={currentPage === totalPages}
+                className="inline-flex w-full items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950 disabled:cursor-not-allowed disabled:border-stone-300 disabled:bg-stone-200 disabled:text-stone-500 sm:w-auto"
+              >
+                Напред
+              </button>
+            </div>
           </div>
         </div>
       ) : null}

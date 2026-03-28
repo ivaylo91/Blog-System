@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="360" viewBox="0 0 520 360">
+  <rect width="100%" height="100%" fill="#f3e0c7"/>
+  <g fill="#7c4d1e">
+    <rect x="60" y="180" width="400" height="120" rx="20"/>
+    <circle cx="140" cy="140" r="36" fill="#b97a56"/>
+    <circle cx="240" cy="120" r="30" fill="#b97a56"/>
+    <circle cx="340" cy="140" r="28" fill="#b97a56"/>
+  </g>
+  <text x="50%" y="40" font-family="serif" font-size="28" fill="#4a2f1a" text-anchor="middle">Кавърма по шопски</text>
+</svg>

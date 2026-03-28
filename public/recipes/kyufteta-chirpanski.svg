@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="360" viewBox="0 0 520 360">
+  <rect width="100%" height="100%" fill="#fff8dc"/>
+  <g fill="#a0522d">
+    <ellipse cx="260" cy="220" rx="220" ry="60"/>
+    <rect x="120" y="120" width="280" height="100" rx="18" fill="#deb887"/>
+  </g>
+  <text x="50%" y="44" font-family="serif" font-size="28" fill="#5a3318" text-anchor="middle">Кюфтета по чирпански</text>
+</svg>

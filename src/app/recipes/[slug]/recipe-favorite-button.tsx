@@ -36,11 +36,7 @@ export function RecipeFavoriteButton({
   } satisfies RecipeFavoriteActionState);
 
   if (!featureEnabled) {
-    return (
-      <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50/90 px-5 py-4 text-sm leading-7 text-stone-600">
-        {/* Любимите рецепти се включват, когато приложението работи с PostgreSQL база данни. */}
-      </div>
-    );
+    return null;
   }
 
   if (!isAuthenticated) {

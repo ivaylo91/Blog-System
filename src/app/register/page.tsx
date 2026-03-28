@@ -159,7 +159,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
           </Link>
           <Link
             href="/"
-            className="rounded-full border border-black/10 bg-white px-6 py-3 text-sm font-semibold text-stone-700 transition hover:border-black/20"
+            className="rounded-full border border-emerald-200/70 bg-emerald-50/85 px-6 py-3 text-sm font-semibold text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-100/90 hover:text-emerald-950"
           >
             Към началото
           </Link>

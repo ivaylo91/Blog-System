@@ -125,7 +125,7 @@ export function RegisterForm({ action, callbackUrl }: RegisterFormProps) {
 
       <button
         type="submit"
-        className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-6 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-center text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
+        className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-rose-200/70 bg-rose-50/85 px-6 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-center text-rose-800 shadow-[0_10px_24px_rgba(190,24,93,0.12)] transition hover:border-rose-300 hover:bg-rose-100/90 hover:text-rose-950"
       >
         Създай профил
       </button>

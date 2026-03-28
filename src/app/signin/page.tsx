@@ -120,7 +120,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
           <SignInCredentialsForm action={signInWithCredentials} callbackUrl={callbackUrl} />
         </div>
 
-        <div className="mt-8 flex items-center gap-3 text-sm font-medium max-[420px]:flex-col max-[420px]:items-stretch">
+          <div className="mt-8 flex items-center gap-3 text-sm font-medium max-[420px]:flex-col max-[420px]:items-stretch">
           <Link
             href="/"
             className="whitespace-nowrap rounded-full border border-emerald-200/80 bg-emerald-50 px-5 py-2.5 text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-100 hover:text-emerald-950"
@@ -129,7 +129,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
           </Link>
           <Link
             href={buildAuthRedirectPath("/register", { callbackUrl })}
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-sky-900/10 bg-[linear-gradient(135deg,#0ea5e9,#0369a1)] px-5 py-2.5 font-semibold text-white shadow-[0_12px_28px_rgba(2,132,199,0.28)] transition hover:bg-[linear-gradient(135deg,#0284c7,#075985)]"
+            className="inline-flex items-center justify-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition border border-rose-200/70 bg-rose-50/85 text-rose-800 hover:border-rose-300 hover:bg-rose-100/90 hover:text-rose-950"
           >
             Нямаш профил? Създай нов
           </Link>

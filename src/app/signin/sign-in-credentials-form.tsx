@@ -73,7 +73,7 @@ export function SignInCredentialsForm({ action, callbackUrl }: SignInCredentials
 
       <button
         type="submit"
-        className="flex w-full items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
+        className="inline-flex w-full items-center justify-center whitespace-nowrap rounded-full border border-sky-200/70 bg-sky-50/85 px-5 py-3 text-sm font-semibold text-sky-800 transition hover:border-sky-300 hover:bg-sky-100/90 hover:text-sky-950"
       >
         Влез
       </button>

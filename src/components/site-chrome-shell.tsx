@@ -46,6 +46,25 @@ function isDashboardRoute(pathname: string) {
   return pathname === "/dashboard" || pathname.startsWith("/dashboard/");
 }
 
+function isSingleRecipe(pathname: string) {
+  return pathname !== "/recipes" && pathname.startsWith("/recipes/");
+}
+
+function getDashboardHeaderClass(href: string) {
+  switch (href) {
+    case "/":
+      return "rounded-full bg-[linear-gradient(135deg,#166534,#16a34a)] px-4 py-2 text-sm font-semibold text-emerald-50 shadow-[0_10px_24px_rgba(22,101,52,0.22)]";
+    case "/recipes":
+      return "rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(217,119,6,0.22)]";
+    case "/dashboard":
+      return "rounded-full bg-[linear-gradient(135deg,#0ea5e9,#0369a1)] px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(2,132,199,0.22)]";
+    case "signout":
+      return "rounded-full bg-[linear-gradient(135deg,#be185d,#fb7185)] px-4 py-2 text-sm font-semibold text-rose-50 shadow-[0_10px_24px_rgba(190,24,93,0.22)]";
+    default:
+      return "rounded-full bg-[linear-gradient(135deg,#b45309,#d97706)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(180,83,9,0.22)]";
+  }
+}
+
 function getNavLinkClassName(href: string, active: boolean) {
   if (href === "/") {
     return active
@@ -103,11 +122,11 @@ function getFooterLinkClassName(href: string, active: boolean) {
 export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellProps, "currentYear">) {
   const pathname = usePathname();
 
-  if (hiddenChromeRoutes.has(pathname)) {
-    return null;
-  }
 
   const dashboardActive = isAuthenticated && isLinkActive(pathname, "/dashboard");
+
+  const dashboardHeaderActiveClass =
+    "rounded-full bg-[linear-gradient(135deg,#b45309,#d97706)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(180,83,9,0.22)]";
 
   // Hamburger menu state
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -129,7 +148,15 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
         <div className="flex items-center gap-3 lg:gap-4">
           <nav className="hidden items-center gap-2 lg:flex">
             {primaryLinks.map((item) => (
-              <Link key={item.href} href={item.href} className={getNavLinkClassName(item.href, isLinkActive(pathname, item.href))}>
+              <Link
+                key={item.href}
+                href={item.href}
+                className={
+                  isDashboardRoute(pathname)
+                    ? getDashboardHeaderClass(item.href)
+                    : `rounded-full px-4 py-2 text-sm font-semibold transition ${getFooterLinkClassName(item.href, isLinkActive(pathname, item.href))}`
+                }
+              >
                 {item.label}
               </Link>
             ))}
@@ -140,7 +167,7 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
               <>
                 <Link
                   href="/dashboard"
-                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                  className={isDashboardRoute(pathname) ? getDashboardHeaderClass("/dashboard") : `rounded-full border px-4 py-2 text-sm font-semibold transition ${
                     dashboardActive
                       ? "border-amber-700 bg-[linear-gradient(135deg,#b45309,#d97706)] text-amber-50"
                       : "border-amber-200/70 bg-amber-50/85 text-amber-800 hover:border-amber-300 hover:bg-amber-100/90 hover:text-amber-950"
@@ -152,7 +179,7 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
                   <form action={onSignOut}>
                     <button
                       type="submit"
-                      className="rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_22px_rgba(217,119,6,0.2)] transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)] flex items-center gap-2"
+                      className={isDashboardRoute(pathname) ? `${getDashboardHeaderClass("signout")} flex items-center gap-2` : "rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_22px_rgba(217,119,6,0.2)] transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)] flex items-center gap-2"}
                     >
                       <FaSignOutAlt className="text-lg" />
                       Изход
@@ -164,20 +191,18 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
               <>
                 <Link
                   href="/signin"
-                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                    isLinkActive(pathname, "/signin")
-                      ? "border-stone-950 bg-stone-950 text-white"
-                      : "border-black/10 bg-white/80 text-stone-800 hover:border-black/15 hover:bg-white"
-                  }`}
+                  className={`mr-2 rounded-full px-4 py-2 text-sm font-semibold transition ${getFooterLinkClassName("/signin", isLinkActive(pathname, "/signin"))}`}
                 >
                   Вход
                 </Link>
-                <Link
-                  href="/register"
-                  className="mr-1 rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-2 font-serif text-sm font-semibold tracking-[0.08em] text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
-                >
-                  Регистрация
-                </Link>
+                {pathname !== "/register" && (
+                  <Link
+                    href="/register"
+                    className={`mr-1 rounded-full px-4 py-2 text-sm font-semibold transition ${getFooterLinkClassName("/register", isLinkActive(pathname, "/register"))}`}
+                  >
+                    Регистрация
+                  </Link>
+                )}
               </>
             )}
           </div>
@@ -198,14 +223,14 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
                 {/* Mobile menu links show active state */}
                 <Link
                   href="/"
-                  className={`px-5 py-3 text-base font-semibold transition ${isLinkActive(pathname, '/') ? 'text-amber-900 bg-amber-50/90' : 'text-stone-900 hover:bg-stone-100'}`}
+                  className={isDashboardRoute(pathname) ? getDashboardHeaderClass("/") + " px-5 py-3 text-base font-semibold" : `px-5 py-3 text-base font-semibold transition ${getFooterLinkClassName('/', isLinkActive(pathname, '/'))}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Начало
                 </Link>
                 <Link
                   href="/recipes"
-                  className={`px-5 py-3 text-base font-semibold transition ${isLinkActive(pathname, '/recipes') ? 'text-amber-900 bg-amber-50/90' : 'text-stone-900 hover:bg-stone-100'}`}
+                  className={isDashboardRoute(pathname) ? getDashboardHeaderClass("/recipes") + " px-5 py-3 text-base font-semibold" : `px-5 py-3 text-base font-semibold transition ${getFooterLinkClassName('/recipes', isLinkActive(pathname, '/recipes'))}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Рецепти
@@ -214,7 +239,7 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
                   <>
                     <Link
                       href="/dashboard"
-                      className={`px-5 py-3 text-base font-semibold transition ${isLinkActive(pathname, '/dashboard') ? 'text-amber-900 bg-amber-50/90' : 'text-stone-900 hover:bg-stone-100'}`}
+                      className={isDashboardRoute(pathname) ? getDashboardHeaderClass("/dashboard") + " px-5 py-3 text-base font-semibold" : `px-5 py-3 text-base font-semibold transition ${isLinkActive(pathname, '/dashboard') ? 'text-amber-900 bg-amber-50/90' : 'text-stone-900 hover:bg-stone-100'}`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Табло
@@ -222,7 +247,7 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
                     {onSignOut && (
                       <button
                         type="button"
-                        className="flex w-full items-center gap-2 px-5 py-3 text-base font-semibold text-amber-700 hover:bg-amber-100"
+                        className={isDashboardRoute(pathname) ? `${getDashboardHeaderClass("signout")} px-5 py-3 text-base font-semibold flex items-center gap-2` : "flex w-full items-center gap-2 px-5 py-3 text-base font-semibold text-amber-700 hover:bg-amber-100"}
                         onClick={async () => {
                           setMobileMenuOpen(false);
                           await onSignOut();
@@ -237,14 +262,20 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
                   <>
                     <Link
                       href="/signin"
-                      className={`px-5 py-3 text-base font-semibold transition ${isLinkActive(pathname, '/signin') ? 'text-amber-900 bg-amber-50/90' : 'text-stone-900 hover:bg-stone-100'}`}
+                      className={`px-5 py-3 text-base font-semibold transition ${getFooterLinkClassName('/signin', isLinkActive(pathname, '/signin'))}`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Вход
                     </Link>
-                    <Link href="/register" className="px-5 py-3 text-base font-semibold text-amber-900 hover:bg-amber-50" onClick={() => setMobileMenuOpen(false)}>
-                      Регистрация
-                    </Link>
+                    {pathname !== "/register" && (
+                      <Link
+                        href="/register"
+                        className={`px-5 py-3 text-base font-semibold transition ${getFooterLinkClassName('/register', isLinkActive(pathname, '/register'))}`}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Регистрация
+                      </Link>
+                    )}
                   </>
                 )}
               </div>
@@ -258,10 +289,6 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
 
 export function SiteFooter({ currentYear }: Pick<SiteChromeShellProps, "currentYear">) {
   const pathname = usePathname();
-
-  if (hiddenChromeRoutes.has(pathname)) {
-    return null;
-  }
 
   if (isDashboardRoute(pathname)) {
     return (
@@ -317,15 +344,15 @@ export function SiteFooter({ currentYear }: Pick<SiteChromeShellProps, "currentY
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:justify-self-end">
-          {footerLinks.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-center text-sm font-semibold transition lg:px-5 lg:py-2.5 ${getFooterLinkClassName(item.href, isLinkActive(pathname, item.href))}`}
-            >
-              {item.label}
-            </Link>
-          ))}
+            {!isSingleRecipe(pathname) && pathname !== "/register" && footerLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-center text-sm font-semibold transition lg:px-5 lg:py-2.5 ${getFooterLinkClassName(item.href, isLinkActive(pathname, item.href))}`}
+              >
+                {item.label}
+              </Link>
+            ))}
         </div>
       </div>
 

@@ -219,7 +219,7 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
               </svg>
             </button>
             {mobileMenuOpen && (
-              <div className="absolute right-4 top-20 z-50 min-w-[180px] rounded-xl border border-stone-200 bg-white/95 shadow-xl flex flex-col py-2">
+              <div className="absolute inset-x-4 top-20 z-50 rounded-xl border border-stone-200 bg-white/95 shadow-xl flex flex-col py-2 lg:inset-x-auto lg:right-4 lg:min-w-[180px]">
                 {/* Mobile menu links show active state */}
                 <Link
                   href="/"

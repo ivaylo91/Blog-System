@@ -64,6 +64,10 @@ export default async function Home() {
       : null,
   ].filter((card): card is TodayInKitchenCard => Boolean(card));
 
+  // Extract unique categories and difficulties for filters
+  const categoryOptions = Array.from(new Set(recipes.map((r) => r.category))).sort();
+  const difficultyOptions = Array.from(new Set(recipes.map((r) => r.difficulty))).sort();
+
   return (
     <main className="grain relative flex-1 overflow-hidden">
       <div className="pointer-events-none absolute inset-0">
@@ -98,26 +102,32 @@ export default async function Home() {
               </p>
             </div>
             <div className="max-w-2xl">
-              <HomepageSearchForm recipes={recipes.map((recipe) => ({ slug: recipe.slug, title: recipe.title }))} />
+              <HomepageSearchForm
+                recipes={recipes.map((recipe) => ({ slug: recipe.slug, title: recipe.title, category: recipe.category, difficulty: recipe.difficulty }))}
+                categoryOptions={categoryOptions}
+                difficultyOptions={difficultyOptions}
+              />
             </div>
           </div>
 
           <div className="rounded-[2rem] border border-black/8 bg-white/80 p-6 shadow-[0_18px_60px_rgba(56,44,24,0.06)] xl:p-7">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">Днес в кухнята</p>
-            <p className="mt-3 text-sm leading-7 text-stone-700">
-              Подбрахме няколко бързи предложения, за да стигнеш веднага до точната рецепта.
-            </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:gap-4">
+            <div className="flex flex-col items-center text-center gap-2 sm:gap-3">
+              <p className="text-base font-bold uppercase tracking-[0.22em] text-amber-700 sm:text-lg">Днес в кухнята</p>
+              <p className="mt-1 text-sm leading-6 text-stone-700 max-w-xs sm:max-w-md">
+                Подбрахме няколко бързи предложения, за да стигнеш веднага до точната рецепта.
+              </p>
+            </div>
+            <div className="mt-7 flex flex-col gap-4 sm:gap-5">
               {todayInKitchenCards.map((card) => (
                 <Link
                   key={`${card.eyebrow}-${card.href}`}
                   href={card.href}
-                  className="group rounded-[1.5rem] border border-black/6 bg-stone-50 px-4 py-4 transition duration-200 ease-out hover:-translate-y-0.5 hover:border-stone-300 hover:bg-white"
+                  className="group flex flex-col items-start rounded-2xl border border-amber-100 bg-stone-50 px-5 py-5 shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:border-amber-200 hover:bg-white focus:outline-none focus:ring-2 focus:ring-amber-300 sm:px-6 sm:py-6"
                 >
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-700">{card.eyebrow}</p>
-                  <h2 className="mt-2 font-serif text-xl text-stone-950">{card.title}</h2>
-                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-stone-600">{card.description}</p>
-                  <span className="mt-4 inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition group-hover:border-amber-300 group-hover:bg-amber-100 group-hover:text-amber-950">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700 mb-1">{card.eyebrow}</p>
+                  <h2 className="font-serif text-lg sm:text-xl text-stone-950 mb-1">{card.title}</h2>
+                  <p className="line-clamp-3 text-sm leading-6 text-stone-600 mb-3">{card.description}</p>
+                  <span className="mt-auto inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition group-hover:border-amber-300 group-hover:bg-amber-100 group-hover:text-amber-950">
                     {card.cta}
                   </span>
                 </Link>
@@ -127,38 +137,36 @@ export default async function Home() {
         </section>
 
         <section className="grid gap-6">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">Най-нови рецепти</p>
-              <h2 className="mt-2 font-serif text-4xl text-stone-950">Последно добавени рецепти в блога.</h2>
-            </div>
+          <div className="flex flex-col items-center text-center gap-2 sm:gap-3 mb-2">
+            <p className="text-base font-bold uppercase tracking-[0.22em] text-amber-700 sm:text-lg">Най-нови рецепти</p>
+            <h2 className="mt-1 font-serif text-2xl sm:text-3xl text-stone-950 max-w-xs sm:max-w-md">Последно добавени рецепти в блога.</h2>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="flex flex-col gap-5 sm:gap-6 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-6">
             {latestRecipes.map((recipe) => (
               <article
                 key={recipe.slug}
-                className="flex h-full flex-col overflow-hidden rounded-[2rem] border border-black/8 bg-white/80 shadow-[0_18px_60px_rgba(56,44,24,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(56,44,24,0.1)]"
+                className="flex h-full flex-col overflow-hidden rounded-2xl border border-black/8 bg-white/90 shadow-[0_8px_32px_rgba(56,44,24,0.08)] transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(56,44,24,0.12)]"
               >
-                <div className="relative h-52 overflow-hidden">
+                <div className="relative w-full aspect-[4/3] overflow-hidden">
                   <RecipeImage src={recipe.imagePath} alt={recipe.title} />
                   <div
-                    className="absolute inset-0 opacity-35"
+                    className="absolute inset-0 opacity-30"
                     style={{
                       background: `linear-gradient(135deg, ${recipe.heroPalette.from}, ${recipe.heroPalette.via}, ${recipe.heroPalette.to})`,
                     }}
                   />
                 </div>
-                <div className="flex flex-1 flex-col gap-4 p-6">
-                  <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                <div className="flex flex-1 flex-col gap-3 p-4 sm:p-6">
+                  <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
                     <span>{recipe.category}</span>
                     <span>{recipe.prepMinutes + recipe.cookMinutes} мин</span>
                   </div>
-                  <h3 className="font-serif text-3xl text-stone-950">{recipe.title}</h3>
-                  <p className="flex-1 text-sm leading-7 text-stone-700">{recipe.excerpt}</p>
+                  <h3 className="font-serif text-xl sm:text-2xl text-stone-950">{recipe.title}</h3>
+                  <p className="flex-1 text-sm leading-6 text-stone-700">{recipe.excerpt}</p>
                   <Link
                     href={`/recipes/${recipe.slug}`}
-                    className="mt-auto inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
+                    className="mt-2 inline-flex items-center justify-center rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-sm font-semibold text-amber-900 shadow-[0_6px_16px_rgba(217,119,6,0.10)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
                   >
                     Виж
                   </Link>
@@ -201,39 +209,37 @@ export default async function Home() {
           </section>
         ) : null}
 
-        <section className="mt-4 grid gap-6 rounded-[2rem] border border-black/8 bg-white/55 px-6 py-8 shadow-[0_18px_60px_rgba(56,44,24,0.05)] lg:mt-6 lg:px-8 xl:px-10 xl:py-10">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">Случайни рецепти</p>
-              <h2 className="mt-2 font-serif text-4xl text-stone-950">Опитай нещо различно от нашия архив.</h2>
-            </div>
+        <section className="mt-4 grid gap-6 rounded-[2rem] border border-black/8 bg-white/55 px-4 py-7 shadow-[0_18px_60px_rgba(56,44,24,0.05)] sm:px-6 sm:py-8 lg:mt-6 lg:px-8 xl:px-10 xl:py-10">
+          <div className="flex flex-col items-center text-center gap-2 sm:gap-3 mb-2">
+            <p className="text-base font-bold uppercase tracking-[0.22em] text-amber-700 sm:text-lg">Случайни рецепти</p>
+            <h2 className="mt-1 font-serif text-2xl sm:text-3xl text-stone-950 max-w-xs sm:max-w-md">Опитай нещо различно от нашия архив.</h2>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="flex flex-col gap-5 sm:gap-6 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-6">
             {randomRecipes.map((recipe) => (
               <article
                 key={recipe.slug}
-                className="flex h-full flex-col overflow-hidden rounded-[2rem] border border-black/8 bg-white/80 shadow-[0_18px_60px_rgba(56,44,24,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(56,44,24,0.1)]"
+                className="flex h-full flex-col overflow-hidden rounded-2xl border border-black/8 bg-white/90 shadow-[0_8px_32px_rgba(56,44,24,0.08)] transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(56,44,24,0.12)]"
               >
-                <div className="relative h-44 overflow-hidden">
+                <div className="relative w-full aspect-[4/3] overflow-hidden">
                   <RecipeImage src={recipe.imagePath} alt={recipe.title} />
                   <div
-                    className="absolute inset-0 opacity-30"
+                    className="absolute inset-0 opacity-25"
                     style={{
                       background: `linear-gradient(135deg, ${recipe.heroPalette.from}, ${recipe.heroPalette.via}, ${recipe.heroPalette.to})`,
                     }}
                   />
                 </div>
-                <div className="flex flex-1 flex-col gap-4 p-6">
-                  <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                <div className="flex flex-1 flex-col gap-3 p-4 sm:p-6">
+                  <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
                     <span>{recipe.category}</span>
                     <span>{recipe.prepMinutes + recipe.cookMinutes} мин</span>
                   </div>
-                  <h3 className="font-serif text-3xl text-stone-950">{recipe.title}</h3>
-                  <p className="flex-1 text-sm leading-7 text-stone-700">{recipe.excerpt}</p>
+                  <h3 className="font-serif text-xl sm:text-2xl text-stone-950">{recipe.title}</h3>
+                  <p className="flex-1 text-sm leading-6 text-stone-700">{recipe.excerpt}</p>
                   <Link
                     href={`/recipes/${recipe.slug}`}
-                    className="mt-auto inline-flex items-center justify-center rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
+                    className="mt-2 inline-flex items-center justify-center rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-sm font-semibold text-amber-900 shadow-[0_6px_16px_rgba(217,119,6,0.10)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
                   >
                     Виж
                   </Link>

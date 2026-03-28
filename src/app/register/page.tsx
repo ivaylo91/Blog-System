@@ -84,6 +84,40 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
       },
     });
 
+    // create verification token and send email if SMTP configured
+    try {
+      const user = await prisma.user.findUnique({ where: { email: parsed.data.email } });
+
+      if (user) {
+        const token = String(randomUUID());
+        const expires = new Date(Date.now() + 1000 * 60 * 60 * 24); // 24h
+
+        await prisma.verificationToken.create({
+          data: {
+            identifier: parsed.data.email,
+            token,
+            expires,
+          },
+        });
+
+        if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+          const { sendMail } = await import("@/lib/mailer");
+          const base = process.env.NEXTAUTH_URL ?? process.env.APP_URL ?? "http://localhost:3000";
+          const verifyUrl = `${base}/verify-email?token=${encodeURIComponent(token)}&email=${encodeURIComponent(parsed.data.email)}`;
+
+          await sendMail({
+            to: parsed.data.email,
+            subject: "Потвърди имейла си",
+            html: `Моля потвърди имейла си като посетиш: <a href="${verifyUrl}">${verifyUrl}</a>`,
+            text: `Потвърди имейла си: ${verifyUrl}`,
+          });
+        }
+      }
+    } catch (err) {
+      // fail silently — registration succeeds even if email fails
+      console.warn("Failed to send verification email:", err);
+    }
+
     redirect(buildAuthRedirectPath("/signin", { registered: "1", callbackUrl: redirectTo }));
   }
 

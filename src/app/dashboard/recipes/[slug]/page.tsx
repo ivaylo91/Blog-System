@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
-import { DashboardRecipeForm, type DashboardRecipeFormValues } from "@/app/dashboard/recipes/recipe-form";
+import DashboardRecipeForm, { type DashboardRecipeFormValues } from "@/app/dashboard/recipes/recipe-form";
 import { updateRecipeAction } from "@/app/dashboard/recipes/actions";
 import { Role } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -111,7 +111,7 @@ export default async function DashboardEditRecipePage({ params }: PageProps) {
                 {recipe.published ? (
                   <Link
                     href={`/recipes/${recipe.slug}`}
-                    className="rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-5 py-3 text-sm font-semibold text-amber-50 transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
+                    className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
                   >
                     Виж публичната страница
                   </Link>

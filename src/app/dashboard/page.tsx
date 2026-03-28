@@ -33,6 +33,12 @@ const quickLinks = [
     href: "/dashboard/favorites",
     cta: "Отвори любими",
   },
+  {
+    title: "Модерация на коментари",
+    description: "Преглед и премахване на неподходящи коментари от посетителите.",
+    href: "/dashboard/comments",
+    cta: "Модерирай",
+  },
 ];
 
 const roleLabels = {

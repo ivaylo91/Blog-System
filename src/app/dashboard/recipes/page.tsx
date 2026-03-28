@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { DashboardRecipesArchive } from "@/app/dashboard/recipes/dashboard-recipes-archive";
-import { DashboardRecipeForm } from "@/app/dashboard/recipes/recipe-form";
+import DashboardRecipeForm from "@/app/dashboard/recipes/recipe-form";
 import { getDashboardRecipes } from "@/lib/recipe-repository";
 
 export const metadata = {

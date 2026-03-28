@@ -79,7 +79,7 @@ export function RelatedRecipesSection({ relatedRecipes, category }: RelatedRecip
               type="button"
               onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
               disabled={currentPage === 1}
-              className="inline-flex items-center justify-center rounded-full border border-amber-950 bg-amber-950 px-5 py-3 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(120,53,15,0.2)] transition duration-200 ease-out hover:-translate-y-0.5 hover:border-amber-900 hover:bg-amber-800 hover:shadow-[0_14px_30px_rgba(120,53,15,0.24)] disabled:cursor-not-allowed disabled:border-amber-200 disabled:bg-amber-100 disabled:text-amber-400 disabled:shadow-none disabled:hover:translate-y-0"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950 disabled:cursor-not-allowed disabled:border-amber-200 disabled:bg-amber-100 disabled:text-amber-400"
             >
               Назад
             </button>
@@ -90,7 +90,7 @@ export function RelatedRecipesSection({ relatedRecipes, category }: RelatedRecip
               type="button"
               onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
               disabled={currentPage === totalPages}
-              className="inline-flex items-center justify-center rounded-full border border-amber-950 bg-amber-950 px-5 py-3 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(120,53,15,0.2)] transition duration-200 ease-out hover:-translate-y-0.5 hover:border-amber-900 hover:bg-amber-800 hover:shadow-[0_14px_30px_rgba(120,53,15,0.24)] disabled:cursor-not-allowed disabled:border-amber-200 disabled:bg-amber-100 disabled:text-amber-400 disabled:shadow-none disabled:hover:translate-y-0"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950 disabled:cursor-not-allowed disabled:border-amber-200 disabled:bg-amber-100 disabled:text-amber-400"
             >
               Напред
             </button>

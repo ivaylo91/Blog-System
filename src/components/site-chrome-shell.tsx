@@ -1,8 +1,10 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/brand-mark";
+import { FaSignOutAlt } from "react-icons/fa";
 
 const primaryLinks = [
   { href: "/", label: "Начало" },
@@ -107,6 +109,9 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
 
   const dashboardActive = isAuthenticated && isLinkActive(pathname, "/dashboard");
 
+  // Hamburger menu state
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
   return (
     <header className="sticky top-0 z-40 border-b border-black/8 bg-[rgba(255,250,243,0.84)] backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-4 lg:px-8">
@@ -120,26 +125,22 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
           </div>
         </Link>
 
+        {/* Desktop nav */}
         <div className="flex items-center gap-3 lg:gap-4">
-          <nav className="hidden items-center gap-2 md:flex">
+          <nav className="hidden items-center gap-2 lg:flex">
             {primaryLinks.map((item) => (
               <Link key={item.href} href={item.href} className={getNavLinkClassName(item.href, isLinkActive(pathname, item.href))}>
                 {item.label}
               </Link>
             ))}
-            {isAuthenticated ? (
-              <Link href="/dashboard" className={getNavLinkClassName("/dashboard", dashboardActive)}>
-                Табло
-              </Link>
-            ) : null}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="hidden lg:flex items-center gap-2 sm:gap-3">
             {isAuthenticated ? (
               <>
                 <Link
                   href="/dashboard"
-                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition md:hidden ${
+                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
                     dashboardActive
                       ? "border-amber-700 bg-[linear-gradient(135deg,#b45309,#d97706)] text-amber-50"
                       : "border-amber-200/70 bg-amber-50/85 text-amber-800 hover:border-amber-300 hover:bg-amber-100/90 hover:text-amber-950"
@@ -151,8 +152,9 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
                   <form action={onSignOut}>
                     <button
                       type="submit"
-                      className="rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_22px_rgba(217,119,6,0.2)] transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
+                      className="rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_22px_rgba(217,119,6,0.2)] transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)] flex items-center gap-2"
                     >
+                      <FaSignOutAlt className="text-lg" />
                       Изход
                     </button>
                   </form>
@@ -177,6 +179,75 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
                   Регистрация
                 </Link>
               </>
+            )}
+          </div>
+
+          {/* Hamburger menu for mobile and tablet */}
+          <div className="lg:hidden flex items-center">
+            <button
+              className="inline-flex items-center justify-center rounded-full p-2 text-2xl text-stone-800 hover:bg-stone-200 focus:outline-none"
+              aria-label="Open menu"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+            >
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            {mobileMenuOpen && (
+              <div className="absolute right-4 top-20 z-50 min-w-[180px] rounded-xl border border-stone-200 bg-white/95 shadow-xl flex flex-col py-2">
+                {/* Mobile menu links show active state */}
+                <Link
+                  href="/"
+                  className={`px-5 py-3 text-base font-semibold transition ${isLinkActive(pathname, '/') ? 'text-amber-900 bg-amber-50/90' : 'text-stone-900 hover:bg-stone-100'}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Начало
+                </Link>
+                <Link
+                  href="/recipes"
+                  className={`px-5 py-3 text-base font-semibold transition ${isLinkActive(pathname, '/recipes') ? 'text-amber-900 bg-amber-50/90' : 'text-stone-900 hover:bg-stone-100'}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Рецепти
+                </Link>
+                {isAuthenticated ? (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      className={`px-5 py-3 text-base font-semibold transition ${isLinkActive(pathname, '/dashboard') ? 'text-amber-900 bg-amber-50/90' : 'text-stone-900 hover:bg-stone-100'}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Табло
+                    </Link>
+                    {onSignOut && (
+                      <button
+                        type="button"
+                        className="flex w-full items-center gap-2 px-5 py-3 text-base font-semibold text-amber-700 hover:bg-amber-100"
+                        onClick={async () => {
+                          setMobileMenuOpen(false);
+                          await onSignOut();
+                        }}
+                      >
+                        <FaSignOutAlt className="text-lg" />
+                        Изход
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/signin"
+                      className={`px-5 py-3 text-base font-semibold transition ${isLinkActive(pathname, '/signin') ? 'text-amber-900 bg-amber-50/90' : 'text-stone-900 hover:bg-stone-100'}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Вход
+                    </Link>
+                    <Link href="/register" className="px-5 py-3 text-base font-semibold text-amber-900 hover:bg-amber-50" onClick={() => setMobileMenuOpen(false)}>
+                      Регистрация
+                    </Link>
+                  </>
+                )}
+              </div>
             )}
           </div>
         </div>

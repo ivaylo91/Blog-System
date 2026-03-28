@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, useRef } from "react";
+import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { createRecipeAction, type CreateRecipeActionState } from "@/app/dashboard/recipes/actions";
 
@@ -102,7 +103,7 @@ const defaultValues: DashboardRecipeFormValues = {
   imagePath: null,
 };
 
-export function DashboardRecipeForm({
+export default function DashboardRecipeForm({
   action = createRecipeAction,
   initialValues = defaultValues,
   mode = "create",
@@ -111,13 +112,37 @@ export function DashboardRecipeForm({
   const [state, formAction, pending] = useActionState(action, initialState);
   const [slugValue, setSlugValue] = useState(initialValues.slug);
   const [slugEditedManually, setSlugEditedManually] = useState(initialValues.slug.length > 0);
+  const [imagePreview, setImagePreview] = useState<string | null>(initialValues.imagePath || null);
 
+  const feedbackRef = useRef<HTMLParagraphElement>(null);
   useEffect(() => {
     if (mode === "edit" && state.status === "success") {
       router.push("/dashboard/recipes");
       router.refresh();
     }
-  }, [mode, router, state.status]);
+    if (state.status === "error" && feedbackRef.current) {
+      feedbackRef.current.focus();
+    }
+    if (state.status !== "idle" && state.message) {
+      const timeout = setTimeout(() => {
+        formAction(initialState, new FormData());
+      }, 4000);
+      return () => clearTimeout(timeout);
+    }
+  }, [mode, router, state.status, state.message, formAction]);
+
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImagePreview(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(initialValues.imagePath || null);
+    }
+  }
 
   function handleTitleChange(title: string) {
     if (!slugEditedManually) {
@@ -207,12 +232,20 @@ export function DashboardRecipeForm({
             type="file"
             accept="image/png,image/jpeg,image/webp,image/svg+xml"
             className={`${inputClassName} file:mr-4 file:rounded-full file:border-0 file:bg-stone-950 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white`}
+            onChange={handleImageChange}
           />
           <span className="text-xs leading-6 text-stone-600">
             {initialValues.imagePath
               ? `Текущо изображение: ${initialValues.imagePath}. Качи нов файл само ако искаш да го замениш.`
               : "По избор. Качи JPG, PNG, WebP или SVG до 5 MB."}
           </span>
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="Преглед на изображението"
+              className="mt-3 max-h-48 rounded-xl border border-black/10 object-contain"
+            />
+          )}
         </label>
 
         <div className="grid gap-5 xl:grid-cols-4">
@@ -298,9 +331,13 @@ export function DashboardRecipeForm({
 
       <div className="flex flex-col gap-4 rounded-[1.5rem] border border-black/8 bg-stone-100 p-5 shadow-[0_12px_28px_rgba(56,44,24,0.05)] sm:flex-row sm:items-center sm:justify-between xl:px-6 xl:py-5">
         <p
+          ref={feedbackRef}
+          tabIndex={-1}
           aria-live="polite"
-          className={`min-h-6 text-sm font-medium ${state.status === "error" ? "text-red-700" : "text-emerald-700"}`}
+          className={`min-h-6 flex items-center gap-2 text-sm font-medium outline-none ${state.status === "error" ? "text-red-700" : state.status === "success" ? "text-emerald-700" : ""}`}
         >
+          {state.status === "error" && <FaExclamationCircle className="h-4 w-4" aria-hidden="true" />} 
+          {state.status === "success" && <FaCheckCircle className="h-4 w-4" aria-hidden="true" />} 
           {state.message || ""}
         </p>
         <button

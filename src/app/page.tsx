@@ -117,7 +117,7 @@ export default async function Home() {
                   <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-700">{card.eyebrow}</p>
                   <h2 className="mt-2 font-serif text-xl text-stone-950">{card.title}</h2>
                   <p className="mt-2 line-clamp-3 text-sm leading-6 text-stone-600">{card.description}</p>
-                  <span className="mt-4 inline-flex rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(217,119,6,0.22)] transition group-hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]">
+                  <span className="mt-4 inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition group-hover:border-amber-300 group-hover:bg-amber-100 group-hover:text-amber-950">
                     {card.cta}
                   </span>
                 </Link>

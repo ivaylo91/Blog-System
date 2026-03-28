@@ -83,13 +83,13 @@ export default async function DashboardPage() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/dashboard/recipes"
-                  className="rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-7 py-3.5 text-sm font-semibold text-amber-50 transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-7 py-3.5 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
                 >
                   Управление на рецепти
                 </Link>
                 <Link
                   href="/recipes"
-                  className="rounded-full border border-black/12 bg-white px-6 py-3 text-sm font-semibold text-stone-800 shadow-[0_10px_24px_rgba(56,44,24,0.05)] transition hover:border-black/15 hover:bg-stone-50"
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-6 py-3 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
                 >
                   Публичен архив
                 </Link>

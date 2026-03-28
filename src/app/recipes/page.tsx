@@ -261,8 +261,8 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
                   aria-disabled={currentPage === 1}
                   className={`inline-flex rounded-full border px-4 py-2 font-semibold transition ${
                     currentPage === 1
-                      ? "pointer-events-none border-stone-300 bg-stone-200 text-stone-500"
-                      : "border-stone-900 bg-stone-950 text-stone-50 hover:border-stone-950 hover:bg-stone-800"
+                      ? "pointer-events-none border-amber-200 bg-amber-100 text-amber-400"
+                      : "border-amber-200/80 bg-amber-50/90 text-amber-900 hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
                   }`}
                 >
                   Назад
@@ -281,8 +281,8 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
                   aria-disabled={currentPage === totalPages}
                   className={`inline-flex rounded-full border px-4 py-2 font-semibold transition ${
                     currentPage === totalPages
-                      ? "pointer-events-none border-stone-300 bg-stone-200 text-stone-500"
-                      : "border-stone-900 bg-stone-950 text-stone-50 hover:border-stone-950 hover:bg-stone-800"
+                      ? "pointer-events-none border-amber-200 bg-amber-100 text-amber-400"
+                      : "border-amber-200/80 bg-amber-50/90 text-amber-900 hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
                   }`}
                 >
                   Напред

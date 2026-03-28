@@ -60,7 +60,7 @@ export function RelatedRecipesSection({ relatedRecipes, category }: RelatedRecip
               <p className="flex-1 text-sm leading-7 text-stone-700">{relatedRecipe.excerpt}</p>
               <Link
                 href={`/recipes/${relatedRecipe.slug}`}
-                className="mt-auto inline-flex w-fit items-center justify-center self-start rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-7 py-4 font-serif text-sm font-semibold tracking-[0.08em] text-white transition duration-200 ease-out hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
+                className="mt-auto inline-flex w-fit items-center justify-center self-start whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-7 py-4 font-serif text-sm font-semibold tracking-[0.08em] text-center text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition duration-200 ease-out hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
               >
                 Виж рецептата
               </Link>

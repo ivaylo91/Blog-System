@@ -9,8 +9,11 @@ type RecipesPageProps = {
     category?: string;
     difficulty?: string;
     sort?: string;
+    page?: string;
   }>;
 };
+
+const RECIPES_PER_PAGE = 6;
 
 const difficultyRank: Record<string, number> = {
   "Лесно": 0,
@@ -54,6 +57,45 @@ function matchesSelectedFilter(value: string, selectedValue: string) {
   return normalizeSearchText(value) === normalizeSearchText(selectedValue);
 }
 
+function buildRecipesPageHref({
+  query,
+  category,
+  difficulty,
+  sort,
+  page,
+}: {
+  query: string;
+  category: string;
+  difficulty: string;
+  sort: string;
+  page: number;
+}) {
+  const nextSearchParams = new URLSearchParams();
+
+  if (query) {
+    nextSearchParams.set("q", query);
+  }
+
+  if (category) {
+    nextSearchParams.set("category", category);
+  }
+
+  if (difficulty) {
+    nextSearchParams.set("difficulty", difficulty);
+  }
+
+  if (sort) {
+    nextSearchParams.set("sort", sort);
+  }
+
+  if (page > 1) {
+    nextSearchParams.set("page", String(page));
+  }
+
+  const queryString = nextSearchParams.toString();
+  return queryString ? `/recipes?${queryString}` : "/recipes";
+}
+
 export const metadata = {
   title: "Рецепти | Кулинарният блог на Иво",
   description: "Разгледай колекцията с традиционни рецепти в Кулинарният блог на Иво.",
@@ -65,6 +107,7 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
   const selectedCategory = typeof resolvedSearchParams.category === "string" ? resolvedSearchParams.category.trim() : "";
   const selectedDifficulty = typeof resolvedSearchParams.difficulty === "string" ? resolvedSearchParams.difficulty.trim() : "";
   const selectedSort = typeof resolvedSearchParams.sort === "string" ? resolvedSearchParams.sort.trim() : "";
+  const rawPage = typeof resolvedSearchParams.page === "string" ? Number.parseInt(resolvedSearchParams.page, 10) : 1;
   const recipes = await getRecipes();
   const categoryOptions = Array.from(new Set(recipes.map((recipe) => recipe.category))).sort((left, right) => left.localeCompare(right, "bg"));
   const difficultyOptions = Array.from(new Set(recipes.map((recipe) => recipe.difficulty)));
@@ -96,6 +139,12 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
 
       return 0;
     });
+  const totalPages = Math.max(1, Math.ceil(filteredRecipes.length / RECIPES_PER_PAGE));
+  const currentPage = Number.isFinite(rawPage) ? Math.min(Math.max(rawPage, 1), totalPages) : 1;
+  const pageStartIndex = (currentPage - 1) * RECIPES_PER_PAGE;
+  const paginatedRecipes = filteredRecipes.slice(pageStartIndex, pageStartIndex + RECIPES_PER_PAGE);
+  const visibleStart = filteredRecipes.length === 0 ? 0 : pageStartIndex + 1;
+  const visibleEnd = Math.min(pageStartIndex + RECIPES_PER_PAGE, filteredRecipes.length);
   const exactMatch = query
     ? filteredRecipes.find((recipe) => normalizeSearchText(recipe.title) === normalizeSearchText(query))
     : null;
@@ -158,40 +207,89 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
       </section>
 
       {filteredRecipes.length > 0 ? (
-        <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filteredRecipes.map((recipe) => (
-            <article
-              key={recipe.slug}
-              className="overflow-hidden rounded-[2rem] border border-black/8 bg-white/80 shadow-[0_18px_60px_rgba(56,44,24,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(56,44,24,0.1)]"
-            >
-              <div className="relative h-56 overflow-hidden">
-                <RecipeImage src={recipe.imagePath} alt={recipe.title} />
-                <div
-                  className="absolute inset-0 opacity-30"
-                  style={{
-                    background: `linear-gradient(135deg, ${recipe.heroPalette.from}, ${recipe.heroPalette.via}, ${recipe.heroPalette.to})`,
-                  }}
-                />
-              </div>
-              <div className="space-y-5 p-6">
-                <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-                  <span>{recipe.category}</span>
-                  <span>{recipe.difficulty}</span>
-                  <span>{recipe.prepMinutes + recipe.cookMinutes} мин</span>
+        <section className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {paginatedRecipes.map((recipe) => (
+              <article
+                key={recipe.slug}
+                className="flex h-full flex-col overflow-hidden rounded-[2rem] border border-black/8 bg-white/80 shadow-[0_18px_60px_rgba(56,44,24,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(56,44,24,0.1)]"
+              >
+                <div className="relative h-56 overflow-hidden">
+                  <RecipeImage src={recipe.imagePath} alt={recipe.title} />
+                  <div
+                    className="absolute inset-0 opacity-30"
+                    style={{
+                      background: `linear-gradient(135deg, ${recipe.heroPalette.from}, ${recipe.heroPalette.via}, ${recipe.heroPalette.to})`,
+                    }}
+                  />
                 </div>
-                <div className="space-y-3">
-                  <h2 className="font-serif text-3xl text-stone-950">{recipe.title}</h2>
-                  <p className="text-sm leading-7 text-stone-700">{recipe.excerpt}</p>
+                <div className="flex flex-1 flex-col gap-5 p-6">
+                  <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                    <span>{recipe.category}</span>
+                    <span>{recipe.difficulty}</span>
+                    <span>{recipe.prepMinutes + recipe.cookMinutes} мин</span>
+                  </div>
+                  <div className="space-y-3">
+                    <h2 className="font-serif text-3xl text-stone-950">{recipe.title}</h2>
+                    <p className="flex-1 text-sm leading-7 text-stone-700">{recipe.excerpt}</p>
+                  </div>
+                  <Link
+                    href={`/recipes/${recipe.slug}`}
+                    className="mt-auto inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-center text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
+                  >
+                    Виж рецептата
+                  </Link>
                 </div>
+              </article>
+            ))}
+          </div>
+
+          {totalPages > 1 ? (
+            <div className="flex flex-col gap-4 rounded-[1.75rem] border border-black/8 bg-white/85 px-6 py-5 text-sm text-stone-700 shadow-[0_18px_60px_rgba(56,44,24,0.05)] lg:flex-row lg:items-center lg:justify-between">
+              <p>
+                Показани {visibleStart}-{visibleEnd} от {filteredRecipes.length} рецепти
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
                 <Link
-                  href={`/recipes/${recipe.slug}`}
-                  className="inline-flex rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-5 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-amber-50 transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
+                  href={buildRecipesPageHref({
+                    query,
+                    category: selectedCategory,
+                    difficulty: selectedDifficulty,
+                    sort: selectedSort,
+                    page: Math.max(1, currentPage - 1),
+                  })}
+                  aria-disabled={currentPage === 1}
+                  className={`inline-flex rounded-full border px-4 py-2 font-semibold transition ${
+                    currentPage === 1
+                      ? "pointer-events-none border-stone-300 bg-stone-200 text-stone-500"
+                      : "border-stone-900 bg-stone-950 text-stone-50 hover:border-stone-950 hover:bg-stone-800"
+                  }`}
                 >
-                  Виж рецептата
+                  Назад
+                </Link>
+                <span className="rounded-full border border-black/8 bg-stone-50 px-4 py-2 font-semibold text-stone-700">
+                  Страница {currentPage} от {totalPages}
+                </span>
+                <Link
+                  href={buildRecipesPageHref({
+                    query,
+                    category: selectedCategory,
+                    difficulty: selectedDifficulty,
+                    sort: selectedSort,
+                    page: Math.min(totalPages, currentPage + 1),
+                  })}
+                  aria-disabled={currentPage === totalPages}
+                  className={`inline-flex rounded-full border px-4 py-2 font-semibold transition ${
+                    currentPage === totalPages
+                      ? "pointer-events-none border-stone-300 bg-stone-200 text-stone-500"
+                      : "border-stone-900 bg-stone-950 text-stone-50 hover:border-stone-950 hover:bg-stone-800"
+                  }`}
+                >
+                  Напред
                 </Link>
               </div>
-            </article>
-          ))}
+            </div>
+          ) : null}
         </section>
       ) : (
         <section className="rounded-[2rem] border border-black/8 bg-white/85 px-8 py-10 shadow-[0_24px_90px_rgba(56,44,24,0.08)]">

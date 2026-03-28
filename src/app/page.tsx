@@ -138,7 +138,7 @@ export default async function Home() {
             {latestRecipes.map((recipe) => (
               <article
                 key={recipe.slug}
-                className="overflow-hidden rounded-[2rem] border border-black/8 bg-white/80 shadow-[0_18px_60px_rgba(56,44,24,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(56,44,24,0.1)]"
+                className="flex h-full flex-col overflow-hidden rounded-[2rem] border border-black/8 bg-white/80 shadow-[0_18px_60px_rgba(56,44,24,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(56,44,24,0.1)]"
               >
                 <div className="relative h-52 overflow-hidden">
                   <RecipeImage src={recipe.imagePath} alt={recipe.title} />
@@ -149,16 +149,16 @@ export default async function Home() {
                     }}
                   />
                 </div>
-                <div className="space-y-4 p-6">
+                <div className="flex flex-1 flex-col gap-4 p-6">
                   <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
                     <span>{recipe.category}</span>
                     <span>{recipe.prepMinutes + recipe.cookMinutes} мин</span>
                   </div>
                   <h3 className="font-serif text-3xl text-stone-950">{recipe.title}</h3>
-                  <p className="text-sm leading-7 text-stone-700">{recipe.excerpt}</p>
+                  <p className="flex-1 text-sm leading-7 text-stone-700">{recipe.excerpt}</p>
                   <Link
                     href={`/recipes/${recipe.slug}`}
-                    className="inline-flex items-center justify-center rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
+                    className="mt-auto inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
                   >
                     Виж
                   </Link>
@@ -213,7 +213,7 @@ export default async function Home() {
             {randomRecipes.map((recipe) => (
               <article
                 key={recipe.slug}
-                className="overflow-hidden rounded-[2rem] border border-black/8 bg-white/80 shadow-[0_18px_60px_rgba(56,44,24,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(56,44,24,0.1)]"
+                className="flex h-full flex-col overflow-hidden rounded-[2rem] border border-black/8 bg-white/80 shadow-[0_18px_60px_rgba(56,44,24,0.06)] transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(56,44,24,0.1)]"
               >
                 <div className="relative h-44 overflow-hidden">
                   <RecipeImage src={recipe.imagePath} alt={recipe.title} />
@@ -224,16 +224,16 @@ export default async function Home() {
                     }}
                   />
                 </div>
-                <div className="space-y-4 p-6">
+                <div className="flex flex-1 flex-col gap-4 p-6">
                   <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
                     <span>{recipe.category}</span>
                     <span>{recipe.prepMinutes + recipe.cookMinutes} мин</span>
                   </div>
                   <h3 className="font-serif text-3xl text-stone-950">{recipe.title}</h3>
-                  <p className="text-sm leading-7 text-stone-700">{recipe.excerpt}</p>
+                  <p className="flex-1 text-sm leading-7 text-stone-700">{recipe.excerpt}</p>
                   <Link
                     href={`/recipes/${recipe.slug}`}
-                    className="inline-flex items-center justify-center rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
+                    className="mt-auto inline-flex items-center justify-center rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
                   >
                     Виж
                   </Link>

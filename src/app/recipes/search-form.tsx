@@ -70,6 +70,8 @@ export function RecipesSearchForm({
         nextSearchParams.delete("sort");
       }
 
+      nextSearchParams.delete("page");
+
       const nextUrl = nextSearchParams.toString() ? `${pathname}?${nextSearchParams.toString()}` : pathname;
 
       startTransition(() => {
@@ -110,6 +112,8 @@ export function RecipesSearchForm({
     } else {
       nextSearchParams.delete("sort");
     }
+
+    nextSearchParams.delete("page");
 
     const nextUrl = nextSearchParams.toString() ? `${pathname}?${nextSearchParams.toString()}` : pathname;
 

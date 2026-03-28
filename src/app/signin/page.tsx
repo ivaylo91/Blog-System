@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 import { auth, signIn } from "@/auth";
+import { SignInCredentialsForm } from "@/app/signin/sign-in-credentials-form";
 import { buildAuthRedirectPath, resolveSafeCallbackUrl } from "@/lib/auth-redirect";
 import { z } from "zod";
 
@@ -116,36 +117,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
             </form>
           ) : null}
 
-          <form action={signInWithCredentials} className="space-y-3">
-            <input type="hidden" name="callbackUrl" value={callbackUrl} />
-            <label className="grid gap-2 text-sm font-medium text-stone-700">
-              Имейл
-              <input
-                name="email"
-                type="email"
-                required
-                className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-stone-950"
-                placeholder="ivo@example.com"
-              />
-            </label>
-            <label className="grid gap-2 text-sm font-medium text-stone-700">
-              Парола
-              <input
-                name="password"
-                type="password"
-                required
-                minLength={5}
-                className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-stone-950"
-                placeholder="Минимум 5 символа"
-              />
-            </label>
-            <button
-              type="submit"
-              className="flex w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#9a3412,#c2410c)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[linear-gradient(135deg,#7c2d12,#9a3412)]"
-            >
-              Влез
-            </button>
-          </form>
+          <SignInCredentialsForm action={signInWithCredentials} callbackUrl={callbackUrl} />
         </div>
 
         <div className="mt-8 flex items-center gap-3 text-sm font-medium max-[420px]:flex-col max-[420px]:items-stretch">

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { auth } from "@/auth";
+import { RegisterForm } from "@/app/register/register-form";
 import { buildAuthRedirectPath, resolveSafeCallbackUrl } from "@/lib/auth-redirect";
 import { prisma } from "@/lib/prisma";
 
@@ -113,63 +114,12 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
           </p>
         ) : null}
 
-        <form action={registerWithEmail} className="mt-8 grid gap-4">
-          <input type="hidden" name="callbackUrl" value={callbackUrl} />
-          <label className="grid gap-2 text-sm font-medium text-stone-700">
-            Име
-            <input
-              name="name"
-              type="text"
-              required
-              className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-stone-950"
-              placeholder="Иво"
-            />
-          </label>
-          <label className="grid gap-2 text-sm font-medium text-stone-700">
-            Имейл
-            <input
-              name="email"
-              type="email"
-              required
-              className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-stone-950"
-              placeholder="ivo@example.com"
-            />
-          </label>
-          <label className="grid gap-2 text-sm font-medium text-stone-700">
-            Парола
-            <input
-              name="password"
-              type="password"
-              required
-              minLength={8}
-              className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-stone-950"
-              placeholder="Минимум 8 символа"
-            />
-          </label>
-          <label className="grid gap-2 text-sm font-medium text-stone-700">
-            Потвърди паролата
-            <input
-              name="confirmPassword"
-              type="password"
-              required
-              minLength={8}
-              className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-stone-950"
-              placeholder="Повтори паролата"
-            />
-          </label>
-
-          <button
-            type="submit"
-            className="rounded-full bg-[linear-gradient(135deg,#047857,#10b981)] px-6 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-emerald-50 shadow-[0_12px_28px_rgba(16,185,129,0.24)] transition hover:bg-[linear-gradient(135deg,#065f46,#059669)]"
-          >
-            Създай профил
-          </button>
-        </form>
+        <RegisterForm action={registerWithEmail} callbackUrl={callbackUrl} />
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href={buildAuthRedirectPath("/signin", { callbackUrl })}
-            className="rounded-full bg-[linear-gradient(135deg,#0369a1,#0284c7)] px-6 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-sky-50 shadow-[0_12px_28px_rgba(2,132,199,0.2)] transition hover:bg-[linear-gradient(135deg,#075985,#0369a1)]"
+            className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-sky-200/80 bg-sky-50/90 px-6 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-center text-sky-900 shadow-[0_10px_24px_rgba(2,132,199,0.12)] transition hover:border-sky-300 hover:bg-sky-100 hover:text-sky-950"
           >
             Имам профил
           </Link>

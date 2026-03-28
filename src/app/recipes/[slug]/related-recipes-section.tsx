@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { RecipeImage } from "@/components/recipe-image";
 import type { AppRecipe } from "@/lib/recipe-repository";
 
@@ -10,15 +10,15 @@ type RelatedRecipesSectionProps = {
   category: string;
 };
 
-const INITIAL_VISIBLE_COUNT = 3;
+const RECIPES_PER_PAGE = 3;
 
 export function RelatedRecipesSection({ relatedRecipes, category }: RelatedRecipesSectionProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const hasMoreRecipes = relatedRecipes.length > INITIAL_VISIBLE_COUNT;
-  const visibleRecipes = useMemo(
-    () => (isExpanded ? relatedRecipes : relatedRecipes.slice(0, INITIAL_VISIBLE_COUNT)),
-    [isExpanded, relatedRecipes],
-  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(relatedRecipes.length / RECIPES_PER_PAGE));
+  const pageStartIndex = (currentPage - 1) * RECIPES_PER_PAGE;
+  const visibleRecipes = relatedRecipes.slice(pageStartIndex, pageStartIndex + RECIPES_PER_PAGE);
+  const visibleStart = relatedRecipes.length === 0 ? 0 : pageStartIndex + 1;
+  const visibleEnd = Math.min(pageStartIndex + RECIPES_PER_PAGE, relatedRecipes.length);
   const categoryLink = `/recipes?category=${encodeURIComponent(category)}`;
 
   if (relatedRecipes.length === 0) {
@@ -69,15 +69,32 @@ export function RelatedRecipesSection({ relatedRecipes, category }: RelatedRecip
         ))}
       </div>
 
-      {hasMoreRecipes ? (
-        <div className="flex justify-center">
-          <button
-            type="button"
-            onClick={() => setIsExpanded((currentValue) => !currentValue)}
-            className="inline-flex items-center justify-center rounded-full border border-amber-300/70 bg-[linear-gradient(135deg,#fff4e6,#ffe1bd)] px-6 py-3.5 text-sm font-semibold text-amber-950 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition duration-200 ease-out hover:-translate-y-0.5 hover:border-amber-400 hover:bg-[linear-gradient(135deg,#ffeacc,#ffd4a1)] hover:shadow-[0_14px_30px_rgba(217,119,6,0.18)]"
-          >
-            {isExpanded ? "Покажи по-малко" : `Покажи още ${relatedRecipes.length - INITIAL_VISIBLE_COUNT} идеи`}
-          </button>
+      {totalPages > 1 ? (
+        <div className="flex flex-col gap-4 border-t border-amber-300/40 pt-5 text-sm text-stone-700 lg:flex-row lg:items-center lg:justify-between">
+          <p>
+            Показани {visibleStart}-{visibleEnd} от {relatedRecipes.length} идеи
+          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              disabled={currentPage === 1}
+              className="inline-flex items-center justify-center rounded-full border border-amber-950 bg-amber-950 px-5 py-3 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(120,53,15,0.2)] transition duration-200 ease-out hover:-translate-y-0.5 hover:border-amber-900 hover:bg-amber-800 hover:shadow-[0_14px_30px_rgba(120,53,15,0.24)] disabled:cursor-not-allowed disabled:border-amber-200 disabled:bg-amber-100 disabled:text-amber-400 disabled:shadow-none disabled:hover:translate-y-0"
+            >
+              Назад
+            </button>
+            <span className="rounded-full border border-amber-300/60 bg-white/80 px-4 py-2 font-semibold text-stone-700">
+              Страница {currentPage} от {totalPages}
+            </span>
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+              disabled={currentPage === totalPages}
+              className="inline-flex items-center justify-center rounded-full border border-amber-950 bg-amber-950 px-5 py-3 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(120,53,15,0.2)] transition duration-200 ease-out hover:-translate-y-0.5 hover:border-amber-900 hover:bg-amber-800 hover:shadow-[0_14px_30px_rgba(120,53,15,0.24)] disabled:cursor-not-allowed disabled:border-amber-200 disabled:bg-amber-100 disabled:text-amber-400 disabled:shadow-none disabled:hover:translate-y-0"
+            >
+              Напред
+            </button>
+          </div>
         </div>
       ) : null}
     </section>

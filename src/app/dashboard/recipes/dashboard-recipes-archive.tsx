@@ -47,7 +47,7 @@ export function DashboardRecipesArchive({ recipes, currentUserId, currentUserRol
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-stone-600">
                     <span className="rounded-full border border-black/8 bg-stone-50 px-2.5 py-1 text-stone-700">{recipe.category}</span>
-                    <span className="rounded-full border border-black/8 bg-stone-50 px-2.5 py-1 text-stone-700">{recipe.source === "database" ? "база данни" : "примерни"}</span>
+                    <span className="rounded-full bg-stone-50 px-2.5 py-1 text-stone-700">{recipe.source === "database" ? "" : "примерни"}</span>
                   </div>
                   <h3 className="mt-3 font-serif text-2xl leading-tight text-stone-950">{recipe.title}</h3>
                 </div>

@@ -104,7 +104,7 @@ export async function RecipeCommentsSection({ recipeSlug }: RecipeCommentsSectio
             <div className="mt-4">
               <Link
                 href={`/signin?callbackUrl=${encodeURIComponent(`/recipes/${recipeSlug}`)}`}
-                className="inline-flex rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-5 py-3 font-semibold text-amber-50 transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
+                className="inline-flex rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
               >
                 Вход за коментар
               </Link>

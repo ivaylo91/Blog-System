@@ -106,7 +106,7 @@ export default async function DashboardPage() {
                 <p className="mt-2 font-serif text-4xl text-stone-950">{publishedRecipes}</p>
               </div>
               <div className="rounded-[1.75rem] border border-black/8 bg-white/90 px-5 py-5 shadow-[0_10px_24px_rgba(56,44,24,0.05)] backdrop-blur">
-                <p className="text-xs uppercase tracking-[0.18em] text-stone-600">База данни</p>
+                {/* Removed 'База данни' label as requested */}
                 <p className="mt-2 font-serif text-4xl text-stone-950">{databaseRecipes}</p>
               </div>
               <div className="rounded-[1.75rem] border border-black/8 bg-white/90 px-5 py-5 shadow-[0_10px_24px_rgba(56,44,24,0.05)] backdrop-blur">
@@ -175,11 +175,7 @@ export default async function DashboardPage() {
 
                   <div className="mt-6 flex items-center justify-between gap-3">
                     <span
-                      className={`inline-flex rounded-full px-4 py-2 text-sm font-semibold transition ${
-                        index === 0
-                          ? "bg-[linear-gradient(135deg,#d97706,#ea580c)] text-amber-50 shadow-[0_10px_24px_rgba(217,119,6,0.2)] group-hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
-                          : "border border-black/10 bg-white/90 text-stone-700 group-hover:border-black/15 group-hover:bg-white"
-                      }`}
+                      className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition group-hover:border-amber-300 group-hover:bg-amber-100 group-hover:text-amber-950"
                     >
                       Отвори секцията
                     </span>

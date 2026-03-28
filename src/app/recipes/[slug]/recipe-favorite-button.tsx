@@ -38,7 +38,7 @@ export function RecipeFavoriteButton({
   if (!featureEnabled) {
     return (
       <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50/90 px-5 py-4 text-sm leading-7 text-stone-600">
-        Любимите рецепти се включват, когато приложението работи с PostgreSQL база данни.
+        {/* Любимите рецепти се включват, когато приложението работи с PostgreSQL база данни. */}
       </div>
     );
   }
@@ -54,7 +54,7 @@ export function RecipeFavoriteButton({
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href={`/signin?callbackUrl=${encodeURIComponent(`/recipes/${recipeSlug}`)}`}
-            className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-5 py-3 font-semibold text-amber-50 transition hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
+            className="inline-flex items-center gap-2 rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-3 font-serif text-sm font-semibold tracking-[0.08em] text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
           >
             <Heart aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
             Вход за запазване

@@ -34,7 +34,7 @@ type DashboardRecipeFormProps = {
 };
 
 const inputClassName =
-  "w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-stone-950 focus:ring-4 focus:ring-amber-100";
+  "w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-stone-500 focus:ring-4 focus:ring-stone-200";
 
 const sectionClassName = "grid gap-5 rounded-[1.75rem] border border-black/6 bg-stone-50 p-5 shadow-[0_10px_30px_rgba(56,44,24,0.04)] xl:gap-6 xl:p-7";
 

@@ -66,7 +66,7 @@ export default async function DashboardFavoritesPage() {
 
         {!usingDatabase ? (
           <div className="rounded-[1.75rem] border border-amber-200 bg-amber-50 px-6 py-5 text-sm leading-7 text-amber-900 shadow-[0_18px_60px_rgba(56,44,24,0.05)]">
-            Любимите рецепти са достъпни, когато приложението работи с активна PostgreSQL база данни.
+            {/* Любимите рецепти са достъпни, когато приложението работи с активна PostgreSQL база данни. */}
           </div>
         ) : favorites.length === 0 ? (
           <section className="rounded-[2rem] border border-black/8 bg-white/90 p-8 shadow-[0_20px_80px_rgba(56,44,24,0.08)] xl:p-10">

@@ -172,11 +172,7 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
                 </Link>
                 <Link
                   href="/register"
-                  className={`rounded-full px-4 py-2 text-sm font-semibold shadow-[0_10px_22px_rgba(217,119,6,0.2)] transition ${
-                    isLinkActive(pathname, "/register")
-                      ? "bg-stone-950 text-white"
-                      : "bg-[linear-gradient(135deg,#d97706,#ea580c)] text-amber-50 hover:bg-[linear-gradient(135deg,#b45309,#c2410c)]"
-                  }`}
+                  className="mr-1 rounded-full border border-amber-200/80 bg-amber-50/90 px-5 py-2 font-serif text-sm font-semibold tracking-[0.08em] text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
                 >
                   Регистрация
                 </Link>

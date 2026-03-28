@@ -96,7 +96,7 @@ export function RecipeShareButtons({ title, url, imageUrl }: RecipeShareButtonsP
   }
 
   return (
-    <div className="grid gap-6 rounded-[1.9rem] border border-black/8 bg-[linear-gradient(180deg,rgba(255,248,240,0.96)_0%,rgba(255,255,255,0.94)_100%)] px-6 py-6 sm:px-7 sm:py-7 xl:px-8 xl:py-8 shadow-[0_18px_50px_rgba(56,44,24,0.08)]">
+    <div className="grid gap-6 rounded-[1.9rem] px-6 py-6 sm:px-7 sm:py-7 xl:px-8 xl:py-8 shadow-[0_18px_50px_rgba(56,44,24,0.08)]">
       <div className="flex flex-wrap items-center justify-between gap-4 xl:gap-6">
         <div className="max-w-xl">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-700">Сподели рецептата</p>

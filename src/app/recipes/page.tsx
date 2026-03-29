@@ -245,48 +245,51 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
           </div>
 
           {totalPages > 1 ? (
-            <div className="flex flex-col gap-4 rounded-[1.75rem] border border-black/8 bg-white/85 px-6 py-5 text-sm text-stone-700 shadow-[0_18px_60px_rgba(56,44,24,0.05)] lg:flex-row lg:items-center lg:justify-between">
-              <p>
-                Показани {visibleStart}-{visibleEnd} от {filteredRecipes.length} рецепти
-              </p>
-              <div className="flex flex-wrap items-center gap-2">
-                <Link
-                  href={buildRecipesPageHref({
-                    query,
-                    category: selectedCategory,
-                    difficulty: selectedDifficulty,
-                    sort: selectedSort,
-                    page: Math.max(1, currentPage - 1),
-                  })}
-                  aria-disabled={currentPage === 1}
-                  className={`inline-flex rounded-full border px-4 py-2 font-semibold transition ${
-                    currentPage === 1
-                      ? "pointer-events-none border-amber-200 bg-amber-100 text-amber-400"
-                      : "border-amber-200/80 bg-amber-50/90 text-amber-900 hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
-                  }`}
-                >
-                  Назад
-                </Link>
-                <span className="rounded-full border border-black/8 bg-stone-50 px-4 py-2 font-semibold text-stone-700">
-                  Страница {currentPage} от {totalPages}
-                </span>
-                <Link
-                  href={buildRecipesPageHref({
-                    query,
-                    category: selectedCategory,
-                    difficulty: selectedDifficulty,
-                    sort: selectedSort,
-                    page: Math.min(totalPages, currentPage + 1),
-                  })}
-                  aria-disabled={currentPage === totalPages}
-                  className={`inline-flex rounded-full border px-4 py-2 font-semibold transition ${
-                    currentPage === totalPages
-                      ? "pointer-events-none border-amber-200 bg-amber-100 text-amber-400"
-                      : "border-amber-200/80 bg-amber-50/90 text-amber-900 hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
-                  }`}
-                >
-                  Напред
-                </Link>
+            <div className="border-t border-black/8 pt-5 text-sm text-stone-700">
+              <div className="flex flex-col items-center gap-4 rounded-[1.75rem] bg-white/85 px-6 py-5 shadow-[0_18px_60px_rgba(56,44,24,0.05)] lg:flex-row lg:items-center lg:justify-between lg:px-0 lg:py-0 lg:shadow-none lg:bg-transparent lg:rounded-none lg:border-0">
+                <p className="text-center lg:text-left">
+                  Показани {visibleStart}-{visibleEnd} от {filteredRecipes.length} рецепти
+                </p>
+
+                <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:w-auto">
+                  <Link
+                    href={buildRecipesPageHref({
+                      query,
+                      category: selectedCategory,
+                      difficulty: selectedDifficulty,
+                      sort: selectedSort,
+                      page: Math.max(1, currentPage - 1),
+                    })}
+                    aria-disabled={currentPage === 1}
+                    className={`inline-flex w-full items-center justify-center rounded-full border px-4 py-2 font-semibold transition ${
+                      currentPage === 1
+                        ? "pointer-events-none border-amber-200 bg-amber-100 text-amber-400"
+                        : "border-amber-200/80 bg-amber-50/90 text-amber-900 hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
+                    } sm:w-auto`}
+                  >
+                    Назад
+                  </Link>
+                  <span className="w-full text-center rounded-full border border-black/8 bg-stone-50 px-4 py-2 font-semibold text-stone-700 sm:w-auto">
+                    Страница {currentPage} от {totalPages}
+                  </span>
+                  <Link
+                    href={buildRecipesPageHref({
+                      query,
+                      category: selectedCategory,
+                      difficulty: selectedDifficulty,
+                      sort: selectedSort,
+                      page: Math.min(totalPages, currentPage + 1),
+                    })}
+                    aria-disabled={currentPage === totalPages}
+                    className={`inline-flex w-full items-center justify-center rounded-full border px-4 py-2 font-semibold transition ${
+                      currentPage === totalPages
+                        ? "pointer-events-none border-amber-200 bg-amber-100 text-amber-400"
+                        : "border-amber-200/80 bg-amber-50/90 text-amber-900 hover:border-amber-300 hover:bg-amber-100 hover:text-amber-950"
+                    } sm:w-auto`}
+                  >
+                    Напред
+                  </Link>
+                </div>
               </div>
             </div>
           ) : null}

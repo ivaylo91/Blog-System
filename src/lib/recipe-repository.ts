@@ -214,7 +214,7 @@ export async function getRecipeBySlug(slug: string) {
       include: recipeInclude,
     });
 
-    return recipe ? mapDatabaseRecipe(recipe) : undefined;
+    return recipe ? mapDatabaseRecipe(recipe) : getSampleRecipeBySlug(slug);
   } catch {
     return getSampleRecipeBySlug(slug);
   }

@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 import { auth } from "@/auth";
 import { NextResponse, type NextRequest } from "next/server";
->>>>>>> caccab7 (fix(middleware): avoid importing Node-only Sentry in Edge middleware)
 // Apply NextAuth auth middleware first, then attach security headers.
 export async function middleware(request: NextRequest) {
   const response = await auth(request as any);

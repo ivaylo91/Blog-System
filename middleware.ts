@@ -15,11 +15,15 @@ export async function middleware(request: NextRequest) {
     res.headers.set("X-Content-Type-Options", "nosniff");
     res.headers.set("Referrer-Policy", "no-referrer-when-downgrade");
     res.headers.set("Permissions-Policy", "geolocation=(), microphone=()",);
-    // A reasonably strict CSP — adjust if needed for inline scripts/assets
-    res.headers.set(
-      "Content-Security-Policy",
-      "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' ; style-src 'self' 'unsafe-inline' https:; font-src 'self' data: https:"
-    );
+    // A reasonably strict CSP — use report-only if requested by env
+    const csp =
+      "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https:; font-src 'self' data: https:";
+
+    if (process.env.CSP_REPORT_ONLY === '1') {
+      res.headers.set('Content-Security-Policy-Report-Only', csp + "; report-uri /csp-report");
+    } else {
+      res.headers.set('Content-Security-Policy', csp);
+    }
 
     return res;
   } catch (err) {

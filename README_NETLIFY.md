@@ -12,12 +12,7 @@ Steps to deploy this Next.js app on Netlify:
    - OAuth: `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` (if used)
    - Optional: `SENTRY_DSN`, any other secrets
 
-   6. To enable the Redis-backed rate limiter (recommended for production):
-      - Create an Upstash Redis database and enable REST API.
-      - Set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` in Netlify site Environment Variables.
-      - The app will automatically use Upstash when both values are present.
-
-   7. To collect CSP violation reports without blocking users, set `CSP_REPORT_ONLY=1` in Netlify env for staging.
+   6. To collect CSP violation reports without blocking users, set `CSP_REPORT_ONLY=1` in Netlify env for staging.
 
 3. The build runs `prisma generate` and `prisma migrate deploy` before `next build` (configured in `package.json`).
    If you prefer not to run migrations during build, adjust `package.json` build script.

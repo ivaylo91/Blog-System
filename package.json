@@ -20,7 +20,6 @@
     "@netlify/neon": "^0.1.2",
     "@prisma/client": "^6.19.2",
     "@sentry/node": "^7.120.4",
-    "@upstash/redis": "^1.37.0",
     "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.7.0",

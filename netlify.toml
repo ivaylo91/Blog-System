@@ -5,9 +5,5 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-[build.environment]
-  # Configure Upstash Redis REST credentials in Netlify site settings
-  UPSTASH_REDIS_REST_URL = ""
-  UPSTASH_REDIS_REST_TOKEN = ""
-  # Enable CSP report-only mode in staging: set to "1" to avoid blocking users
-  CSP_REPORT_ONLY = "0"
+# Note: Upstash integration removed — configure any environment variables
+# in the Netlify UI: Site settings -> Build & deploy -> Environment.

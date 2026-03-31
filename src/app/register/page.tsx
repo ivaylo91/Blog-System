@@ -94,9 +94,9 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     const passwordHash = await hash(parsed.data.password, 12);
 
     await prisma.user.create({
-      data: {
-        name: parsed.data.name,
-        email: parsed.data.email,
+      try {
+        const hdrs = await headers();
+        const ip = (hdrs.get("x-forwarded-for") ?? hdrs.get("x-real-ip") ?? "local") as string;
         passwordHash,
       },
     });

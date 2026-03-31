@@ -14,7 +14,7 @@ export const authConfig = {
       name: process.env.SESSION_COOKIE_NAME ?? "next-auth.session-token",
       options: {
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: 'lax',
         path: "/",
         secure: process.env.NODE_ENV === "production",
       },

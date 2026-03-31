@@ -1,6 +1,19 @@
+import { redisRateLimit } from './redis-rate-limit'
+
 const buckets = new Map<string, { count: number; expiresAt: number }>();
 
-export function rateLimit(key: string, limit = 10, windowMs = 60_000) {
+export async function rateLimit(key: string, limit = 10, windowMs = 60_000) {
+  // Prefer Redis-backed limiter in production if configured
+  try {
+    if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+      return await redisRateLimit(key, limit, windowMs)
+    }
+  } catch (e) {
+    // fall back to in-memory implementation on error
+    // eslint-disable-next-line no-console
+    console.warn('Redis rate limit failed, using in-memory fallback', e)
+  }
+
   const now = Date.now();
   const existing = buckets.get(key);
 

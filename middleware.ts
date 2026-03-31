@@ -7,7 +7,11 @@ export async function middleware(request: NextRequest) {
 
   // If auth returned a NextResponse, add security headers; otherwise return as-is.
   try {
-    const res = (response as NextResponse) ?? NextResponse.next();
+    const isNextResponse = (obj: unknown): obj is NextResponse => {
+      return !!obj && typeof (obj as any)?.headers?.set === "function";
+    };
+
+    const res = isNextResponse(response) ? response : NextResponse.next();
 
     // Basic security headers
     res.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
@@ -27,7 +31,7 @@ export async function middleware(request: NextRequest) {
 
     return res;
   } catch (err) {
-    return response as Response;
+    return NextResponse.next();
   }
 }
 

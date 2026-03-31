@@ -6,6 +6,7 @@ import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { authConfig } from "@/auth.config";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -13,29 +14,11 @@ const credentialsSchema = z.object({
 });
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   adapter: PrismaAdapter(prisma),
-  session: {
-    strategy: "jwt",
-    maxAge: 60 * 60 * 24 * 30, // 30 days
-  },
   jwt: {
     maxAge: 60 * 60 * 24 * 30,
   },
-  cookies: {
-    sessionToken: {
-      name: process.env.SESSION_COOKIE_NAME ?? "next-auth.session-token",
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-  },
-  pages: {
-    signIn: "/signin",
-  },
-  trustHost: true,
   providers: [
     ...(process.env.DATABASE_URL && process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET
       ? [
@@ -83,13 +66,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    authorized({ auth: session, request: { nextUrl } }) {
-      if (nextUrl.pathname.startsWith("/dashboard")) {
-        return Boolean(session?.user);
-      }
-
-      return true;
-    },
+    ...authConfig.callbacks,
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;

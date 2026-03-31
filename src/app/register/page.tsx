@@ -1,5 +1,7 @@
 import { hash } from "bcryptjs";
 import { randomUUID } from "node:crypto";
+import { headers } from "next/headers";
+import { rateLimit } from "@/lib/rate-limit";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -43,6 +45,20 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
 
   async function registerWithEmail(formData: FormData) {
     "use server";
+
+      // Basic IP rate limiting to slow down automated registration attempts
+      try {
+        const hdrs = headers();
+        const ip = (hdrs.get("x-forwarded-for") ?? hdrs.get("x-real-ip") ?? "local") as string;
+        const rl = rateLimit(`register:${ip}`, 5, 60_000);
+        if (!rl.allowed) {
+          redirect(
+            buildAuthRedirectPath("/register", { error: "Rate limit exceeded. Try again later.", callbackUrl: redirectTo }),
+          );
+        }
+      } catch (e) {
+        // don't block registration on rate-limit internal errors
+      }
 
     const redirectTo = resolveSafeCallbackUrl(formData.get("callbackUrl")?.toString());
 

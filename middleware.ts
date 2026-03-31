@@ -1,8 +1,15 @@
 import { auth } from "@/auth";
 import { NextResponse, type NextRequest } from "next/server";
+import { initSentry } from "@/lib/sentry";
 
 // Apply NextAuth auth middleware first, then attach security headers.
 export async function middleware(request: NextRequest) {
+  // initialize Sentry (no-op if SENTRY_DSN not set)
+  try {
+    initSentry();
+  } catch (e) {
+    // ignore
+  }
   const response = await auth(request as any);
 
   // If auth returned a NextResponse, add security headers; otherwise return as-is.

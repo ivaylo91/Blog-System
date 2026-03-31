@@ -51,7 +51,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     try {
       const hdrs = await headers();
       const ip = (hdrs.get("x-forwarded-for") ?? hdrs.get("x-real-ip") ?? "local") as string;
-      const rl = rateLimit(`register:${ip}`, 5, 60_000);
+      const rl = await rateLimit(`register:${ip}`, 5, 60_000);
       if (!rl.allowed) {
         redirect(
           buildAuthRedirectPath("/register", { error: "Rate limit exceeded. Try again later.", callbackUrl: redirectTo }),

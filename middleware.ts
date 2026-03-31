@@ -1,32 +1,42 @@
-import NextAuth from "next-auth";
-import { authConfig } from "@/auth.config";
-import { NextResponse } from "next/server";
-
-const { auth } = NextAuth(authConfig);
-
+<<<<<<< HEAD
+import { auth } from "@/auth";
+import { NextResponse, type NextRequest } from "next/server";
+>>>>>>> caccab7 (fix(middleware): avoid importing Node-only Sentry in Edge middleware)
 // Apply NextAuth auth middleware first, then attach security headers.
-export default auth(function middleware(request) {
-  const response = NextResponse.next();
+export async function middleware(request: NextRequest) {
+  const response = await auth(request as any);
 
-  // Basic security headers
-  response.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
-  response.headers.set("X-Frame-Options", "DENY");
-  response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("Referrer-Policy", "no-referrer-when-downgrade");
-  response.headers.set("Permissions-Policy", "geolocation=(), microphone=()");
+  try {
+    // If the auth middleware returned a NextResponse-like object, attach headers.
+    const maybe = response as unknown;
+    if (maybe && typeof (maybe as any)?.headers?.set === "function") {
+      const res = maybe as unknown as NextResponse;
 
-  // A reasonably strict CSP — use report-only if requested by env
-  const csp =
-    "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https:; font-src 'self' data: https:";
+      // Basic security headers
+      res.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
+      res.headers.set("X-Frame-Options", "DENY");
+      res.headers.set("X-Content-Type-Options", "nosniff");
+      res.headers.set("Referrer-Policy", "no-referrer-when-downgrade");
+      res.headers.set("Permissions-Policy", "geolocation=(), microphone=()");
 
-  if (process.env.CSP_REPORT_ONLY === '1') {
-    response.headers.set('Content-Security-Policy-Report-Only', csp + "; report-uri /csp-report");
-  } else {
-    response.headers.set('Content-Security-Policy', csp);
+      // A reasonably strict CSP — use report-only if requested by env
+      const csp =
+        "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https:; font-src 'self' data: https:";
+
+      if (process.env.CSP_REPORT_ONLY === '1') {
+        res.headers.set('Content-Security-Policy-Report-Only', csp + "; report-uri /csp-report");
+      } else {
+        res.headers.set('Content-Security-Policy', csp);
+      }
+
+      return res;
+    }
+  } catch (err) {
+    // ignore and continue to return whatever auth returned
   }
 
-  return response;
-});
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: ["/:path*"],

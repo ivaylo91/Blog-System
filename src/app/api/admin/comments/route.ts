@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   }
 
   const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'local'
-  const rl = rateLimit(`admin:${session.user.id}:bulkDelete`, 5, 60_000)
+  const rl = await rateLimit(`admin:${session.user.id}:bulkDelete`, 5, 60_000)
   if (!rl.allowed) {
     return NextResponse.json({ error: 'rate_limited' }, { status: 429 })
   }

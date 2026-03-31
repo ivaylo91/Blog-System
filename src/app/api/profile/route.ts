@@ -72,7 +72,7 @@ export async function POST(req: Request) {
     const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'local';
     const { rateLimit } = await import('@/lib/rate-limit');
     const key = `profile:${session.user.id}:${ip}`;
-    const rl = rateLimit(key, 6, 60_000);
+    const rl = await rateLimit(key, 6, 60_000);
     if (!rl.allowed) {
       return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
     }

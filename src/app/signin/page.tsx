@@ -51,10 +51,10 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
     // rate-limit by IP to mitigate brute-force attempts
     try {
       const { headers } = await import("next/headers");
-      const hdrs = headers();
+      const hdrs = await headers();
       const ip = (hdrs.get("x-forwarded-for") ?? hdrs.get("x-real-ip") ?? "local") as string;
       const { rateLimit } = await import("@/lib/rate-limit");
-      const rl = rateLimit(`signin:${ip}`, 10, 60_000);
+      const rl = await rateLimit(`signin:${ip}`, 10, 60_000);
       if (!rl.allowed) {
         redirect(buildAuthRedirectPath("/signin", { error: "Rate limit exceeded. Try again later.", callbackUrl: redirectTo }));
       }

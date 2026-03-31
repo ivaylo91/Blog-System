@@ -4,3 +4,6 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Note: Upstash integration removed — configure any environment variables
+# in the Netlify UI: Site settings -> Build & deploy -> Environment.

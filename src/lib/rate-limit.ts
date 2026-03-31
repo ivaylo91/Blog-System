@@ -1,6 +1,7 @@
 const buckets = new Map<string, { count: number; expiresAt: number }>();
 
-export function rateLimit(key: string, limit = 10, windowMs = 60_000) {
+export async function rateLimit(key: string, limit = 10, windowMs = 60_000) {
+  // In-memory rate limiter only — removed Upstash/Redis integration
   const now = Date.now();
   const existing = buckets.get(key);
 

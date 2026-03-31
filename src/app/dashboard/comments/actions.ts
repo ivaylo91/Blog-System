@@ -16,7 +16,7 @@ export async function deleteCommentAction(formData: FormData) {
   }
 
   // basic rate limit per admin user to prevent accidental floods
-  const rl = rateLimit(`admin:${session.user.id}:deleteComment`, 10, 60_000);
+  const rl = await rateLimit(`admin:${session.user.id}:deleteComment`, 10, 60_000);
   if (!rl.allowed) return;
 
   const commentId = formData.get("commentId");

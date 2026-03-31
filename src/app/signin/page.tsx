@@ -66,7 +66,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
       await signIn("credentials", {
         email: parsed.data.email,
         password: parsed.data.password,
-        redirectTo,
+        callbackUrl: redirectTo,
       });
     } catch (error) {
       if (error instanceof AuthError) {
@@ -83,7 +83,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
     const redirectTo = resolveSafeCallbackUrl(formData.get("callbackUrl")?.toString());
 
     await signIn("google", {
-      redirectTo,
+      callbackUrl: redirectTo,
     });
   }
 

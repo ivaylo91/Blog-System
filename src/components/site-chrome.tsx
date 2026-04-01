@@ -14,7 +14,8 @@ export async function SiteHeaderChrome() {
 }
 
 export async function SiteFooterChrome() {
+  const session = await auth();
   const currentYear = new Date().getFullYear();
 
-  return <SiteFooter currentYear={currentYear} />;
+  return <SiteFooter currentYear={currentYear} isAuthenticated={Boolean(session?.user)} />;
 }

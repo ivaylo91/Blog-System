@@ -258,7 +258,7 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
   );
 }
 
-export function SiteFooter({ currentYear }: Pick<SiteChromeShellProps, "currentYear">) {
+export function SiteFooter({ currentYear, isAuthenticated }: Pick<SiteChromeShellProps, "currentYear" | "isAuthenticated">) {
   const pathname = usePathname();
 
   if (isDashboardRoute(pathname)) {
@@ -315,7 +315,9 @@ export function SiteFooter({ currentYear }: Pick<SiteChromeShellProps, "currentY
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:justify-self-end">
-            {!isSingleRecipe(pathname) && pathname !== "/register" && footerLinks.map((item) => (
+            {!isSingleRecipe(pathname) && pathname !== "/register" && footerLinks
+              .filter((item) => isAuthenticated ? item.href !== "/signin" && item.href !== "/register" : true)
+              .map((item) => (
               <Link
                 key={item.href}
                 href={item.href}

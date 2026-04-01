@@ -184,14 +184,20 @@ async function mapDatabaseRecipes(): Promise<AppRecipe[]> {
 export async function getRecipes() {
   noStore();
 
+  const sampleRecipes = mapSampleRecipes();
+
   if (!hasDatabaseConfig()) {
-    return mapSampleRecipes();
+    return sampleRecipes;
   }
 
   try {
-    return await mapDatabaseRecipes();
+    const dbRecipes = await mapDatabaseRecipes();
+    // Merge: DB recipes take priority by slug, sample recipes fill the rest
+    const dbSlugs = new Set(dbRecipes.map((r) => r.slug));
+    const uniqueSampleRecipes = sampleRecipes.filter((r) => !dbSlugs.has(r.slug));
+    return [...dbRecipes, ...uniqueSampleRecipes].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
   } catch {
-    return mapSampleRecipes();
+    return sampleRecipes;
   }
 }
 
@@ -201,8 +207,11 @@ export async function getFeaturedRecipes() {
 }
 
 export async function getRecipeBySlug(slug: string) {
+  // Always check sample recipes as fallback
+  const sampleRecipe = getSampleRecipeBySlug(slug);
+
   if (!hasDatabaseConfig()) {
-    return getSampleRecipeBySlug(slug);
+    return sampleRecipe;
   }
 
   try {
@@ -214,9 +223,9 @@ export async function getRecipeBySlug(slug: string) {
       include: recipeInclude,
     });
 
-    return recipe ? mapDatabaseRecipe(recipe) : getSampleRecipeBySlug(slug);
+    return recipe ? mapDatabaseRecipe(recipe) : sampleRecipe;
   } catch {
-    return getSampleRecipeBySlug(slug);
+    return sampleRecipe;
   }
 }
 

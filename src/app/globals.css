@@ -23,7 +23,6 @@ html {
 }
 
 body {
-  min-height: 100vh;
   background:
     linear-gradient(rgba(255, 250, 243, 0.72), rgba(255, 250, 243, 0.72)),
     url("/backgrounds/cooking-pattern.svg") center top / 980px auto repeat,

@@ -68,7 +68,7 @@ export default async function DashboardPage() {
         <div className="absolute right-[-5rem] top-24 h-80 w-80 rounded-full bg-[radial-gradient(circle,_rgba(234,88,12,0.16)_0%,_rgba(234,88,12,0)_70%)] blur-3xl" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 px-6 py-12 xl:gap-10 xl:px-8">
+      <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-6 py-12 xl:gap-10 xl:px-8">
         <section className="overflow-hidden rounded-[2.25rem] border border-black/8 bg-[linear-gradient(180deg,rgba(255,250,243,0.9),rgba(255,247,237,0.96))] text-stone-900 shadow-[0_30px_100px_rgba(56,44,24,0.12)]">
           <div className="grid gap-8 px-8 py-10 lg:grid-cols-[1.2fr_0.8fr] lg:px-10 xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-10 xl:px-12 xl:py-12">
             <div className="space-y-5">

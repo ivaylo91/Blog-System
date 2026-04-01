@@ -15,7 +15,11 @@ export default async function ResetPasswordPage({ searchParams }: ResetProps) {
   const email = resolvedParams.email;
 
   if (!token || !email) {
-    return <p className="text-red-600">Невалиден линк.</p>;
+    return (
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 px-6 py-10">
+        <p className="text-red-600">Невалиден линк.</p>
+      </main>
+    );
   }
 
   async function handleReset(formData: FormData) {

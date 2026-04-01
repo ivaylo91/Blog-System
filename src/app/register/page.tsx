@@ -138,7 +138,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-6 py-16">
+    <main className="flex flex-1 items-center justify-center px-6 py-16">
       <div className="w-full max-w-md rounded-[2rem] border border-black/10 bg-white/90 p-8 shadow-[0_30px_120px_rgba(56,44,24,0.16)] backdrop-blur">
         <div className="space-y-3">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-700">

@@ -93,10 +93,10 @@ export default function CommentsListClient({ comments }: { comments: CommentItem
         {comments.map((c) => (
           <div key={c.id} className="p-4 border rounded-md flex justify-between gap-4">
             <div>
-              <div className="text-sm text-gray-600">От: {c.author?.name ?? c.author?.email}</div>
-              <div className="text-sm text-gray-500">Рецепта: <a href={`/recipes/${c.recipe.slug}`} className="underline">{c.recipe.title}</a></div>
-              <div className="mt-2 text-gray-800">{c.body}</div>
-              <div className="text-xs text-gray-400 mt-2">{new Date(c.createdAt).toLocaleString()}</div>
+              <div className="text-sm text-stone-600">От: {c.author?.name ?? c.author?.email}</div>
+              <div className="text-sm text-stone-500">Рецепта: <a href={`/recipes/${c.recipe.slug}`} className="underline">{c.recipe.title}</a></div>
+              <div className="mt-2 text-stone-800">{c.body}</div>
+              <div className="text-xs text-stone-400 mt-2">{new Date(c.createdAt).toLocaleString()}</div>
             </div>
             <div className="flex flex-col items-end justify-start gap-2">
               <label className="flex items-center gap-2">

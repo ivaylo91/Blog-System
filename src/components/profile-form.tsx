@@ -4,7 +4,6 @@ import React, { useState } from "react";
 
 type Props = {
   initialName?: string | null;
-  initialEmail?: string | null;
   initialImage?: string | null;
 };
 

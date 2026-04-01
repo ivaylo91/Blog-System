@@ -19,7 +19,7 @@ export default async function ProfilePage() {
         <p className="mt-2 text-sm text-stone-700">Актуализирай твоето име и профилна снимка.</p>
 
         <div className="mt-6">
-          <ProfileForm initialName={user.name ?? ""} initialEmail={user.email ?? ""} initialImage={user.image ?? null} />
+          <ProfileForm initialName={user.name ?? ""} initialImage={user.image ?? null} />
         </div>
       </section>
     </main>

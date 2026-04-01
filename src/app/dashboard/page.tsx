@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { auth, signOut } from "@/auth";
+import { auth } from "@/auth";
 import { getDashboardRecipes, getFavoriteRecipes } from "@/lib/recipe-repository";
 
 export const metadata = {
@@ -56,16 +56,9 @@ export default async function DashboardPage() {
   const recipes = await getDashboardRecipes();
   const favoriteRecipes = await getFavoriteRecipes(session.user.id);
 
-  async function handleSignOut() {
-    "use server";
-
-    await signOut({ redirectTo: "/" });
-  }
-
   const localizedRole = roleLabels[session.user.role as keyof typeof roleLabels] ?? session.user.role;
   const publishedRecipes = recipes.filter((recipe) => recipe.published).length;
   const databaseRecipes = recipes.filter((recipe) => recipe.source === "database").length;
-  const sampleRecipes = recipes.filter((recipe) => recipe.source === "sample").length;
   const favoriteRecipesCount = favoriteRecipes.length;
 
   return (
@@ -112,7 +105,7 @@ export default async function DashboardPage() {
                 <p className="mt-2 font-serif text-4xl text-stone-950">{publishedRecipes}</p>
               </div>
               <div className="rounded-[1.75rem] border border-black/8 bg-white/90 px-5 py-5 shadow-[0_10px_24px_rgba(56,44,24,0.05)] backdrop-blur">
-                {/* Removed 'База данни' label as requested */}
+                <p className="text-xs uppercase tracking-[0.18em] text-stone-600">От базата данни</p>
                 <p className="mt-2 font-serif text-4xl text-stone-950">{databaseRecipes}</p>
               </div>
               <div className="rounded-[1.75rem] border border-black/8 bg-white/90 px-5 py-5 shadow-[0_10px_24px_rgba(56,44,24,0.05)] backdrop-blur">
@@ -120,22 +113,6 @@ export default async function DashboardPage() {
                 <p className="mt-2 font-serif text-4xl text-stone-950">{favoriteRecipesCount}</p>
               </div>
             </div>
-          </div>
-
-          <div className="flex flex-col gap-3 border-t border-black/6 px-8 py-5 text-sm text-stone-700 lg:flex-row lg:items-center lg:justify-between lg:px-10 xl:px-12">
-            <div className="flex flex-wrap items-center gap-3 xl:gap-4">
-              <span className="rounded-full border border-black/8 bg-white/90 px-3 py-1.5 shadow-[0_8px_18px_rgba(56,44,24,0.04)]">Потребител: {session.user.email ?? "няма имейл"}</span>
-              <span className="rounded-full border border-black/8 bg-white/90 px-3 py-1.5 shadow-[0_8px_18px_rgba(56,44,24,0.04)]">Роля: {localizedRole}</span>
-              <span className="rounded-full border border-black/8 bg-white/90 px-3 py-1.5 shadow-[0_8px_18px_rgba(56,44,24,0.04)]">Примерни рецепти: {sampleRecipes}</span>
-            </div>
-            <form action={handleSignOut}>
-              <button
-                type="submit"
-                className="rounded-full border border-black/12 bg-white px-5 py-2.5 text-sm font-semibold text-stone-800 shadow-[0_10px_24px_rgba(56,44,24,0.05)] transition hover:border-black/15 hover:bg-stone-50"
-              >
-                Изход
-              </button>
-            </form>
           </div>
         </section>
 

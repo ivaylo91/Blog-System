@@ -2,12 +2,13 @@ import { auth } from "@/auth";
 import { NextResponse, type NextRequest } from "next/server";
 // Apply NextAuth auth middleware first, then attach security headers.
 export async function middleware(request: NextRequest) {
-  const response = await auth(request as any);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const response = await (auth as any)(request);
 
   try {
     // If the auth middleware returned a NextResponse-like object, attach headers.
     const maybe = response as unknown;
-    if (maybe && typeof (maybe as any)?.headers?.set === "function") {
+    if (maybe && typeof (maybe as { headers?: { set?: unknown } })?.headers?.set === "function") {
       const res = maybe as unknown as NextResponse;
 
       // Basic security headers
@@ -29,7 +30,7 @@ export async function middleware(request: NextRequest) {
 
       return res;
     }
-  } catch (err) {
+  } catch (_err) {
     // ignore and continue to return whatever auth returned
   }
 

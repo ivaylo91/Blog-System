@@ -5,7 +5,6 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { deleteRecipeAction } from "@/app/dashboard/recipes/actions";
-import { DashboardRecipeDeleteButton } from "@/app/dashboard/recipes/delete-recipe-button";
 
 type ArchiveRecipe = {
   id?: string | null;
@@ -49,7 +48,7 @@ export function DashboardRecipesArchive({ recipes, currentUserId, currentUserRol
       formData.append("recipeId", recipeId);
       await deleteRecipeAction(formData);
       setFeedback({ type: "success", message: `Рецептата „${recipeTitle}“ беше изтрита успешно.` });
-    } catch (e) {
+    } catch {
       setFeedback({ type: "error", message: `Възникна грешка при изтриване на „${recipeTitle}“.` });
     } finally {
       setDeletingId(null);

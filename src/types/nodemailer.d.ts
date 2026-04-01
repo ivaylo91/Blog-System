@@ -1,4 +1,4 @@
 declare module 'nodemailer' {
-  const nodemailer: any;
+  const nodemailer: { createTransport: (options: Record<string, unknown>) => { sendMail: (mail: Record<string, unknown>) => Promise<unknown> } };
   export default nodemailer;
 }

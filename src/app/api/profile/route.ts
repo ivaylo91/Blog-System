@@ -76,7 +76,7 @@ export async function POST(req: Request) {
     if (!rl.allowed) {
       return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
     }
-  } catch (e) {
+  } catch {
     // ignore rate-limit failures
   }
 

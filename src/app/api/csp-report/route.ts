@@ -7,14 +7,13 @@ export async function POST(request: Request) {
     try {
       const { captureException } = await import('@/lib/sentry')
       if (body) captureException(new Error('CSP report'), { body })
-    } catch (e) {
+    } catch {
       // ignore if sentry not configured
-      // eslint-disable-next-line no-console
       console.warn('CSP report received', body)
     }
 
     return NextResponse.json({ status: 'ok' })
-  } catch (err) {
+  } catch {
     return NextResponse.json({ status: 'error' }, { status: 500 })
   }
 }

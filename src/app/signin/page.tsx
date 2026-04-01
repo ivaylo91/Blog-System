@@ -58,7 +58,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
       if (!rl.allowed) {
         redirect(buildAuthRedirectPath("/signin", { error: "Rate limit exceeded. Try again later.", callbackUrl: redirectTo }));
       }
-    } catch (e) {
+    } catch {
       // continue if rate-limit helpers fail
     }
 

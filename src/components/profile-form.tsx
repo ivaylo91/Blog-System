@@ -8,7 +8,7 @@ type Props = {
   initialImage?: string | null;
 };
 
-export function ProfileForm({ initialName = "", initialEmail = "", initialImage = null }: Props) {
+export function ProfileForm({ initialName = "", initialImage = null }: Props) {
   const [name, setName] = useState(initialName ?? "");
   const [imagePreview, setImagePreview] = useState<string | null>(initialImage ?? null);
   const [file, setFile] = useState<File | null>(null);
@@ -33,7 +33,7 @@ export function ProfileForm({ initialName = "", initialEmail = "", initialImage 
 
       setStatus("Saved");
       setImagePreview(data.user.image ?? null);
-    } catch (err) {
+    } catch {
       setStatus("Network error");
     }
   }

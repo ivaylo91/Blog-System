@@ -15,13 +15,12 @@ export function initSentry() {
   initialized = true
 }
 
-export function captureException(err: unknown, ctx?: unknown) {
+export function captureException(err: unknown, _ctx?: unknown) {
   if (!initialized) initSentry()
   if (initialized) {
-    Sentry.captureException(err as any)
+    Sentry.captureException(err)
   } else {
     // fallback to console
-    // eslint-disable-next-line no-console
     console.error(err)
   }
 }

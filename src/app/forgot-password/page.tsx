@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { hash } from "bcryptjs";
 import { randomUUID } from "node:crypto";
 import { sendMail } from "@/lib/mailer";
 import { redirect } from "next/navigation";

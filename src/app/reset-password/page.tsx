@@ -4,12 +4,13 @@ import { redirect } from "next/navigation";
 import { buildAuthRedirectPath } from "@/lib/auth-redirect";
 
 type ResetProps = {
-  searchParams?: { token?: string; email?: string };
+  searchParams?: Promise<{ token?: string; email?: string }>;
 };
 
 export default async function ResetPasswordPage({ searchParams }: ResetProps) {
-  const token = searchParams?.token;
-  const email = searchParams?.email;
+  const resolvedParams = (await searchParams) ?? {};
+  const token = resolvedParams.token;
+  const email = resolvedParams.email;
 
   if (!token || !email) {
     return <p className="text-red-600">Невалиден линк.</p>;

@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import CommentsListClient from "./CommentsListClient";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 export default async function AdminCommentsPage() {
   const hasDatabase = Boolean(process.env.DATABASE_URL);

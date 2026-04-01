@@ -13,7 +13,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'not_authenticated' }, { status: 401 })
   }
 
-  const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'local'
   const rl = await rateLimit(`admin:${session.user.id}:bulkDelete`, 5, 60_000)
   if (!rl.allowed) {
     return NextResponse.json({ error: 'rate_limited' }, { status: 429 })
@@ -22,7 +21,7 @@ export async function POST(req: Request) {
   let body: unknown
   try {
     body = await req.json()
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: 'invalid_json' }, { status: 400 })
   }
 

@@ -58,7 +58,6 @@ export default function CommentsListClient({ comments }: { comments: CommentItem
         alert(json?.error ?? 'Грешка при изтриване')
       }
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(e)
       alert('Грешка при изтриване')
     } finally {

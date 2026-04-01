@@ -57,7 +57,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
           buildAuthRedirectPath("/register", { error: "Rate limit exceeded. Try again later.", callbackUrl: redirectTo }),
         );
       }
-    } catch (e) {
+    } catch {
       // don't block registration on rate-limit internal errors
     }
 

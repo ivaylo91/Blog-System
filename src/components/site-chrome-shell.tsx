@@ -26,8 +26,6 @@ const dashboardFooterLinks = [
   { href: "/", label: "Към сайта" },
 ];
 
-const hiddenChromeRoutes = new Set(["/signin", "/register"]);
-
 type SiteChromeShellProps = {
   isAuthenticated: boolean;
   currentYear: number;
@@ -65,30 +63,6 @@ function getDashboardHeaderClass(href: string) {
   }
 }
 
-function getNavLinkClassName(href: string, active: boolean) {
-  if (href === "/") {
-    return active
-      ? "rounded-full bg-[linear-gradient(135deg,#166534,#16a34a)] px-4 py-2 text-sm font-semibold text-emerald-50 shadow-[0_10px_24px_rgba(22,101,52,0.22)]"
-      : "rounded-full border border-emerald-200/70 bg-emerald-50/85 px-4 py-2 text-sm font-semibold text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-100/90 hover:text-emerald-950";
-  }
-
-  if (href === "/recipes") {
-    return active
-      ? "rounded-full bg-[linear-gradient(135deg,#d97706,#ea580c)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(217,119,6,0.22)]"
-      : "rounded-full border border-amber-200/70 bg-amber-50/85 px-4 py-2 text-sm font-semibold text-amber-800 transition hover:border-amber-300 hover:bg-amber-100/90 hover:text-amber-950";
-  }
-
-  if (href === "/dashboard") {
-    return active
-      ? "rounded-full bg-[linear-gradient(135deg,#b45309,#d97706)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(180,83,9,0.22)]"
-      : "rounded-full border border-amber-200/70 bg-amber-50/85 px-4 py-2 text-sm font-semibold text-amber-800 transition hover:border-amber-300 hover:bg-amber-100/90 hover:text-amber-950";
-  }
-
-  return active
-    ? "rounded-full bg-stone-950 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(28,25,23,0.18)]"
-    : "rounded-full border border-stone-200/70 bg-white/85 px-4 py-2 text-sm font-semibold text-stone-700 transition hover:border-stone-300 hover:bg-stone-100/90 hover:text-stone-950";
-}
-
 function getFooterLinkClassName(href: string, active: boolean) {
   if (href === "/") {
     return active
@@ -124,9 +98,6 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
 
 
   const dashboardActive = isAuthenticated && isLinkActive(pathname, "/dashboard");
-
-  const dashboardHeaderActiveClass =
-    "rounded-full bg-[linear-gradient(135deg,#b45309,#d97706)] px-4 py-2 text-sm font-semibold text-amber-50 shadow-[0_10px_24px_rgba(180,83,9,0.22)]";
 
   // Hamburger menu state
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);

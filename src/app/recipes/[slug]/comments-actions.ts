@@ -116,7 +116,7 @@ export async function rateRecipeAction(
 
     const existingComment = await findExistingTopLevelComment(recipe.id, user.id);
 
-    if (!existingComment || existingComment.body.trim().length === 0 && existingComment.id.length === 0) {
+    if (!existingComment) {
       return createErrorState("Нямаш запазена оценка за премахване.");
     }
 

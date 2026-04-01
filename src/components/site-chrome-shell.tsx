@@ -18,14 +18,6 @@ const footerLinks = [
   { href: "/register", label: "Регистрация" },
 ];
 
-const dashboardFooterLinks = [
-  { href: "/dashboard", label: "Табло" },
-  { href: "/dashboard/recipes", label: "Рецепти" },
-  { href: "/dashboard/favorites", label: "Любими" },
-  { href: "/recipes", label: "Публичен архив" },
-  { href: "/", label: "Към сайта" },
-];
-
 type SiteChromeShellProps = {
   isAuthenticated: boolean;
   currentYear: number;
@@ -260,49 +252,6 @@ export function SiteHeader({ isAuthenticated, onSignOut }: Omit<SiteChromeShellP
 
 export function SiteFooter({ currentYear, isAuthenticated }: Pick<SiteChromeShellProps, "currentYear" | "isAuthenticated">) {
   const pathname = usePathname();
-
-  if (isDashboardRoute(pathname)) {
-    return (
-      <footer className="mt-auto border-t border-black/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.55),rgba(255,247,237,0.92))] text-stone-800">
-        <div className="mx-auto grid w-full max-w-7xl gap-8 px-6 py-10 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.9fr)] lg:px-8">
-          <div className="space-y-3">
-            <p className="font-serif text-2xl text-stone-950">Административна зона</p>
-            <p className="max-w-2xl text-sm leading-7 text-stone-600">
-              Управлявай рецептите, следи публикуваното съдържание и преминавай бързо между таблото и публичния архив.
-            </p>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2 lg:justify-self-end">
-            {dashboardFooterLinks.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`inline-flex items-center justify-center rounded-full border px-4 py-2 text-center text-sm font-semibold transition lg:px-5 lg:py-2.5 ${
-                  item.href === "/dashboard" && isLinkActive(pathname, item.href)
-                    ? "border-amber-700 bg-[linear-gradient(135deg,#b45309,#d97706)] text-amber-50 shadow-[0_10px_24px_rgba(180,83,9,0.22)]"
-                    : isLinkActive(pathname, item.href)
-                      ? "border-stone-300/70 bg-stone-200/80 text-stone-950 shadow-[0_10px_24px_rgba(41,37,36,0.1)]"
-                      : item.href === "/dashboard"
-                      ? "border-amber-200/70 bg-amber-50/85 text-amber-800 hover:border-amber-300 hover:bg-amber-100/90 hover:text-amber-950"
-                      : item.href === "/dashboard/recipes" || item.href === "/dashboard/favorites"
-                        ? "border-amber-200/70 bg-amber-50/85 text-amber-800 hover:border-amber-300 hover:bg-amber-100/90 hover:text-amber-950"
-                        : item.href === "/recipes"
-                          ? "border-emerald-200/70 bg-emerald-50/85 text-emerald-800 hover:border-emerald-300 hover:bg-emerald-100/90 hover:text-emerald-950"
-                          : "border-sky-200/70 bg-sky-50/85 text-sky-800 hover:border-sky-300 hover:bg-sky-100/90 hover:text-sky-950"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="border-t border-black/6 px-6 py-4 text-center text-sm text-stone-500 lg:px-8">
-          {currentYear} Кулинарният блог на Иво. Панел за управление на съдържанието.
-        </div>
-      </footer>
-    );
-  }
 
   return (
     <footer className="mt-auto border-t border-black/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.55),rgba(255,247,237,0.92))]">

@@ -30,33 +30,35 @@ export async function RecipeCommentsSection({ recipeSlug }: RecipeCommentsSectio
     return null;
   }
 
-  const session = await auth();
-  const recipe = await prisma.recipe.findUnique({
-    where: { slug: recipeSlug },
-    select: {
-      comments: {
-        where: { parentId: null },
-        orderBy: { createdAt: "desc" },
-        include: {
-          author: {
-            select: {
-              name: true,
-              email: true,
+  let recipe;
+  try {
+    const session = await auth();
+    recipe = await prisma.recipe.findUnique({
+      where: { slug: recipeSlug },
+      select: {
+        comments: {
+          where: { parentId: null },
+          orderBy: { createdAt: "desc" },
+          include: {
+            author: {
+              select: {
+                name: true,
+                email: true,
+              },
             },
           },
         },
       },
-    },
-  });
+    });
 
-  if (!recipe) {
-    return null;
-  }
+    if (!recipe) {
+      return null;
+    }
 
-  const existingViewerComment = session?.user?.id
-    ? recipe.comments.find((comment) => comment.authorId === session.user.id)
-    : null;
-  const commentsWithBody = recipe.comments.filter((comment) => comment.body.trim().length > 0);
+    const existingViewerComment = session?.user?.id
+      ? recipe.comments.find((comment) => comment.authorId === session.user.id)
+      : null;
+    const commentsWithBody = recipe.comments.filter((comment) => comment.body.trim().length > 0);
 
   const ratings = recipe.comments.map((comment) => comment.rating).filter((rating): rating is number => typeof rating === "number");
   const averageRating = ratings.length > 0 ? ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length : null;
@@ -140,4 +142,7 @@ export async function RecipeCommentsSection({ recipeSlug }: RecipeCommentsSectio
       </div>
     </section>
   );
+  } catch {
+    return null;
+  }
 }

@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { hash } from "bcryptjs";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { buildAuthRedirectPath } from "@/lib/auth-redirect";
+import { rateLimit } from "@/lib/rate-limit";
 
 type ResetProps = {
   searchParams?: Promise<{ token?: string; email?: string }>;
@@ -23,6 +25,18 @@ export default async function ResetPasswordPage({ searchParams }: ResetProps) {
     const emailValue = String(email);
     const tokenValue = String(token);
     if (newPassword.length < 8) return;
+
+    // Rate-limit password reset attempts
+    try {
+      const hdrs = await headers();
+      const ip = (hdrs.get("x-forwarded-for") ?? hdrs.get("x-real-ip") ?? "local") as string;
+      const rl = await rateLimit(`reset:${ip}`, 5, 60_000);
+      if (!rl.allowed) {
+        redirect(buildAuthRedirectPath("/signin", { callbackUrl: "/" }));
+      }
+    } catch (err) {
+      if (err && typeof err === "object" && "digest" in err) throw err; // re-throw redirect
+    }
 
     const record = await prisma.verificationToken.findUnique({ where: { identifier_token: { identifier: `pw:${emailValue}`, token: tokenValue } } });
     if (!record || new Date(record.expires) < new Date()) {

@@ -8,14 +8,13 @@ import { logger } from "@/lib/logger";
 
 const uploadsDirectory = path.join(process.cwd(), "public", "uploads", "avatars");
 const maxImageSizeBytes = 5 * 1024 * 1024;
-const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/svg+xml"]);
+const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 function getImageExtension(file: File) {
   const mapping: Record<string, string> = {
     "image/jpeg": ".jpg",
     "image/png": ".png",
     "image/webp": ".webp",
-    "image/svg+xml": ".svg",
   };
 
   return mapping[file.type] ?? ".img";
@@ -23,7 +22,7 @@ function getImageExtension(file: File) {
 
 async function saveAvatar(file: File) {
   if (file.size === 0) return null;
-  if (!allowedImageTypes.has(file.type)) throw new Error("Изображението трябва да е JPG, PNG, WebP или SVG.");
+  if (!allowedImageTypes.has(file.type)) throw new Error("Изображението трябва да е JPG, PNG или WebP.");
   if (file.size > maxImageSizeBytes) throw new Error("Изображението трябва да е до 5 MB.");
 
   await mkdir(uploadsDirectory, { recursive: true });
@@ -76,8 +75,8 @@ export async function POST(req: Request) {
     if (!rl.allowed) {
       return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
     }
-  } catch {
-    // ignore rate-limit failures
+  } catch (rateLimitErr) {
+    logger.error(rateLimitErr);
   }
 
   // basic name validation
@@ -105,6 +104,6 @@ export async function POST(req: Request) {
       await deleteUploadedAvatar(uploadedPath);
     }
     logger.error(err);
-    return NextResponse.json({ error: err instanceof Error ? err.message : String(err) }, { status: 400 });
+    return NextResponse.json({ error: "Неуспешна актуализация на профила." }, { status: 400 });
   }
 }

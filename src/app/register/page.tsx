@@ -87,7 +87,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     });
 
     if (existingUser) {
-      redirect(buildAuthRedirectPath("/register", { error: "Потребител с този имейл вече съществува.", callbackUrl: redirectTo }));
+      redirect(buildAuthRedirectPath("/register", { error: "Регистрацията не е възможна. Опитай с друг имейл или влез в профила си.", callbackUrl: redirectTo }));
     }
 
     const passwordHash = await hash(parsed.data.password, 12);

@@ -1,14 +1,28 @@
 import { prisma } from "@/lib/prisma";
 import { randomUUID } from "node:crypto";
 import { sendMail } from "@/lib/mailer";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { buildAuthRedirectPath } from "@/lib/auth-redirect";
+import { rateLimit } from "@/lib/rate-limit";
 
 export default async function ForgotPasswordPage() {
   async function handleRequest(formData: FormData) {
     "use server";
 
     const email = String(formData.get("email") ?? "");
+
+    // Rate-limit password reset requests
+    try {
+      const hdrs = await headers();
+      const ip = (hdrs.get("x-forwarded-for") ?? hdrs.get("x-real-ip") ?? "local") as string;
+      const rl = await rateLimit(`forgot:${ip}`, 3, 60_000);
+      if (!rl.allowed) {
+        redirect(buildAuthRedirectPath("/signin", { callbackUrl: "/" }));
+      }
+    } catch (err) {
+      if (err && typeof err === "object" && "digest" in err) throw err; // re-throw redirect
+    }
 
     const user = await prisma.user.findUnique({ where: { email } });
 

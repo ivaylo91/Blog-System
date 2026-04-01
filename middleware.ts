@@ -15,12 +15,12 @@ export async function middleware(request: NextRequest) {
       res.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
       res.headers.set("X-Frame-Options", "DENY");
       res.headers.set("X-Content-Type-Options", "nosniff");
-      res.headers.set("Referrer-Policy", "no-referrer-when-downgrade");
+      res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
       res.headers.set("Permissions-Policy", "geolocation=(), microphone=()");
 
       // A reasonably strict CSP — use report-only if requested by env
       const csp =
-        "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https:; font-src 'self' data: https:";
+        "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https:; font-src 'self' data: https:; frame-ancestors 'none'";
 
       if (process.env.CSP_REPORT_ONLY === '1') {
         res.headers.set('Content-Security-Policy-Report-Only', csp + "; report-uri /csp-report");

@@ -266,15 +266,15 @@ export function SiteFooter({ currentYear, isAuthenticated }: Pick<SiteChromeShel
         <div className="grid gap-3 sm:grid-cols-2 lg:justify-self-end">
             {!isSingleRecipe(pathname) && pathname !== "/register" && footerLinks
               .filter((item) => isAuthenticated ? item.href !== "/signin" && item.href !== "/register" : true)
-              .map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-center text-sm font-semibold transition lg:px-5 lg:py-2.5 ${getFooterLinkClassName(item.href, isLinkActive(pathname, item.href))}`}
-              >
-                {item.label}
-              </Link>
-            ))}
+                .map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition lg:px-5 lg:py-2.5 ${getFooterLinkClassName(item.href, isLinkActive(pathname, item.href))}`}
+                >
+                  {item.label}
+                </Link>
+              ))}
         </div>
       </div>
 

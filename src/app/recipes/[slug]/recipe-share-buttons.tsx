@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState, useEffect } from "react";
 import { FaArrowUpRightFromSquare, FaCopy, FaEnvelope, FaFacebookF, FaLinkedinIn, FaPinterestP, FaShareNodes, FaTelegram, FaViber, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 
 type RecipeShareButtonsProps = {
@@ -57,11 +57,11 @@ function SharePlatformIcon({ icon }: { icon: ShareOption["icon"] }) {
 
 export function RecipeShareButtons({ title, url, imageUrl }: RecipeShareButtonsProps) {
   const [copyMessage, setCopyMessage] = useState("");
-  const canNativeShare = useSyncExternalStore(
-    () => () => undefined,
-    () => typeof navigator !== "undefined" && "share" in navigator,
-    () => false,
-  );
+  const [canNativeShare, setCanNativeShare] = useState(false);
+
+  useEffect(() => {
+    setCanNativeShare(typeof navigator !== "undefined" && "share" in navigator);
+  }, []);
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
   const encodedImage = encodeURIComponent(imageUrl);

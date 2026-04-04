@@ -1,6 +1,7 @@
 import { RecipeImage } from "@/components/recipe-image";
 import Link from "next/link";
 import { HomepageSearchForm } from "@/app/homepage-search-form";
+import { Button } from "@/components/ui/button";
 import { getRecipes } from "@/lib/recipe-repository";
 
 type TodayInKitchenCard = {
@@ -127,9 +128,11 @@ export default async function Home() {
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700 mb-1">{card.eyebrow}</p>
                   <h2 className="font-serif text-lg sm:text-xl text-stone-950 mb-1">{card.title}</h2>
                   <p className="line-clamp-3 text-sm leading-6 text-stone-600 mb-3">{card.description}</p>
-                  <span className="mt-auto inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition group-hover:border-amber-300 group-hover:bg-amber-100 group-hover:text-amber-950">
-                    {card.cta}
-                  </span>
+                  <Button asChild size="sm" className="mt-auto">
+                    <span className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-sm font-semibold text-amber-900 shadow-[0_10px_24px_rgba(217,119,6,0.12)] transition group-hover:border-amber-300 group-hover:bg-amber-100 group-hover:text-amber-950">
+                      {card.cta}
+                    </span>
+                  </Button>
                 </Link>
               ))}
             </div>
